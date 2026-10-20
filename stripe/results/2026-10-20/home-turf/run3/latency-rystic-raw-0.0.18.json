@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-20T16:14:33Z",
+  "base_url": "http://127.0.0.1:12303",
+  "get_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.058,
+    "p95_ms": 0.075,
+    "p99_ms": 0.172,
+    "mean_ms": 0.062,
+    "total_s": 0.312
+  },
+  "label": "stripe sim, source build at v0.0.18 release commit",
+  "post_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.095,
+    "p95_ms": 0.128,
+    "p99_ms": 0.33,
+    "mean_ms": 0.104,
+    "total_s": 0.526
+  }
+}

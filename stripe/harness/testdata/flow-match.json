@@ -1,0 +1,130 @@
+{
+  "label": "Same Flow",
+  "base_url": "http://127.0.0.1:1",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-17T23:12:57Z",
+  "total_seconds": 1.0,
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a product and a $20/month price",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "unit_amount": 2000,
+        "interval": "month"
+      }
+    },
+    {
+      "step": 2,
+      "name": "create a test clock at 1 Nov 2026",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "frozen_time": 1793491200,
+        "clock_status": "ready"
+      }
+    },
+    {
+      "step": 3,
+      "name": "create a customer on the clock with a card",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "test_clock_matches": true,
+        "cards_attached": 1,
+        "card_brand": "visa"
+      }
+    },
+    {
+      "step": 4,
+      "name": "subscribe the customer",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "subscription_status": "active",
+        "period_start": 1793491200,
+        "period_end": 1796083200,
+        "first_invoice": {
+          "billing_reason": "subscription_create",
+          "status": "paid",
+          "amount_paid": 2000
+        },
+        "latest_invoice_type": "object"
+      }
+    },
+    {
+      "step": 5,
+      "name": "advance the clock past the first renewal",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "clock_status": "ready",
+        "reached_target": true,
+        "polls": 0
+      }
+    },
+    {
+      "step": 6,
+      "name": "read the subscription and its invoices after the renewal",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": [
+          200,
+          200
+        ],
+        "subscription_status": "active",
+        "period_moved_one_month": true,
+        "invoices": [
+          {
+            "billing_reason": "subscription_create",
+            "status": "paid",
+            "amount_paid": 2000
+          },
+          {
+            "billing_reason": "subscription_cycle",
+            "status": "paid",
+            "amount_paid": 2000
+          }
+        ]
+      }
+    },
+    {
+      "step": 7,
+      "name": "list the events the flow caused",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "event_types": {
+          "customer.created": 1,
+          "invoice.created": 2,
+          "invoice.paid": 2,
+          "product.created": 1,
+          "test_helpers.test_clock.created": 1,
+          "test_helpers.test_clock.ready": 1
+        }
+      }
+    }
+  ],
+  "flow": "billing"
+}

@@ -1,0 +1,121 @@
+{
+  "label": "stripe-mock v0.206.0",
+  "flow": "billing",
+  "base_url": "http://127.0.0.1:12111",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-20T16:10:46Z",
+  "total_seconds": 0.02,
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a product and a $20/month price",
+      "request": [
+        "POST /v1/products",
+        "POST /v1/prices"
+      ],
+      "ms": 9.9,
+      "result": {
+        "status": 200,
+        "unit_amount": 2000,
+        "interval": "month"
+      }
+    },
+    {
+      "step": 2,
+      "name": "create a test clock at 1 Nov 2026",
+      "request": [
+        "POST /v1/test_helpers/test_clocks"
+      ],
+      "ms": 1.0,
+      "result": {
+        "status": 200,
+        "frozen_time": 1793491200,
+        "clock_status": "ready"
+      }
+    },
+    {
+      "step": 3,
+      "name": "create a customer on the clock with a card",
+      "request": [
+        "POST /v1/customers",
+        "GET /v1/customers/cus_\u2026/payment_methods"
+      ],
+      "ms": 2.3,
+      "result": {
+        "status": 200,
+        "test_clock_matches": true,
+        "cards_attached": 1,
+        "card_brand": "visa"
+      }
+    },
+    {
+      "step": 4,
+      "name": "subscribe the customer",
+      "request": [
+        "POST /v1/subscriptions"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "subscription_status": "active",
+        "period_start": 1896570518,
+        "period_end": 976287773,
+        "latest_invoice_type": "object",
+        "first_invoice": {
+          "billing_reason": "manual",
+          "status": "draft",
+          "amount_paid": 0
+        }
+      }
+    },
+    {
+      "step": 5,
+      "name": "advance the clock past the first renewal",
+      "request": [
+        "POST /v1/test_helpers/test_clocks/clock_\u2026/advance"
+      ],
+      "ms": 0.8,
+      "result": {
+        "status": 200,
+        "clock_status": "ready",
+        "reached_target": true,
+        "polls": 0
+      }
+    },
+    {
+      "step": 6,
+      "name": "read the subscription and its invoices after the renewal",
+      "request": [
+        "GET /v1/subscriptions/sub_\u2026",
+        "GET /v1/invoices?subscription=sub_\u2026&limit=10"
+      ],
+      "ms": 1.4,
+      "result": {
+        "status": [
+          200,
+          200
+        ],
+        "subscription_status": "active",
+        "period_moved_one_month": false,
+        "invoices": [
+          {
+            "billing_reason": "manual",
+            "status": "draft",
+            "amount_paid": 0
+          }
+        ]
+      }
+    },
+    {
+      "step": 7,
+      "name": "list the events the flow caused",
+      "request": [
+        "GET /v1/events?limit=100"
+      ],
+      "ms": 0.5,
+      "result": {
+        "event_types": {}
+      }
+    }
+  ]
+}

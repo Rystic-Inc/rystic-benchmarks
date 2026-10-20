@@ -1,0 +1,49 @@
+{
+  "label": "Short Run",
+  "base_url": "http://127.0.0.1:1",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-17T23:12:57Z",
+  "total_seconds": 1.0,
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a product and a $20/month price",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "unit_amount": 2000,
+        "interval": "month"
+      }
+    },
+    {
+      "step": 2,
+      "name": "create a test clock at 1 Nov 2026",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "frozen_time": 1793491200,
+        "clock_status": "ready"
+      }
+    },
+    {
+      "step": 3,
+      "name": "create a customer on the clock with a card",
+      "request": [
+        "different"
+      ],
+      "ms": 2.0,
+      "result": {
+        "status": 200,
+        "test_clock_matches": true,
+        "cards_attached": 0,
+        "card_brand": null
+      }
+    }
+  ]
+}

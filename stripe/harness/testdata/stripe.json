@@ -1,0 +1,50 @@
+{
+  "label": "Stripe",
+  "base_url": "https://api.stripe.com",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-17T23:28:25Z",
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a customer",
+      "request": [
+        "POST /v1/customers"
+      ],
+      "ms": 255.0,
+      "result": {
+        "status": 200
+      }
+    },
+    {
+      "step": 2,
+      "name": "pay $50 with a card",
+      "request": [
+        "POST /v1/payment_intents"
+      ],
+      "ms": 839.9,
+      "result": {
+        "status": 200,
+        "pi_status": "succeeded",
+        "charge": "ch_\u2026",
+        "bt": {
+          "amount": 5000,
+          "fee": 175
+        }
+      }
+    },
+    {
+      "step": 3,
+      "name": "list the events the flow caused",
+      "request": [
+        "GET /v1/events?limit=100"
+      ],
+      "ms": 343.0,
+      "result": {
+        "event_types": {
+          "charge.succeeded": 1,
+          "charge.updated": 1
+        }
+      }
+    }
+  ]
+}

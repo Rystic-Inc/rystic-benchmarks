@@ -1,0 +1,5 @@
+# Key files and local run output stay out of the repo.
+*.env
+.env
+__pycache__/
+.pytest_cache/

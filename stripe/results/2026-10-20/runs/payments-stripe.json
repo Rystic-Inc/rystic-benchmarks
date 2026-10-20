@@ -1,0 +1,172 @@
+{
+  "label": "Stripe test mode",
+  "base_url": "https://api.stripe.com",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-20T16:10:56Z",
+  "total_seconds": 8.35,
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a customer",
+      "request": [
+        "POST /v1/customers"
+      ],
+      "ms": 230.7,
+      "result": {
+        "status": 200
+      }
+    },
+    {
+      "step": 2,
+      "name": "pay $50 with a card, then replay the same request",
+      "request": [
+        "POST /v1/payment_intents",
+        "POST /v1/payment_intents"
+      ],
+      "ms": 840.6,
+      "result": {
+        "status": 200,
+        "pi_status": "succeeded",
+        "amount_received": 5000,
+        "replay_status": 200,
+        "replay_same_id": true
+      }
+    },
+    {
+      "step": 3,
+      "name": "read the charge and its balance transaction",
+      "request": [
+        "GET /v1/charges/ch_\u2026",
+        "GET /v1/charges/ch_\u2026",
+        "GET /v1/charges/ch_\u2026",
+        "GET /v1/balance_transactions/txn_\u2026"
+      ],
+      "ms": 3014.0,
+      "result": {
+        "status": 200,
+        "paid": true,
+        "captured": true,
+        "card_brand": "visa",
+        "bt_attached": true,
+        "bt_status": 200,
+        "bt": {
+          "amount": 5000,
+          "fee": 175,
+          "net": 4825,
+          "type": "charge",
+          "status": "pending"
+        }
+      },
+      "waited_s": 2.7
+    },
+    {
+      "step": 4,
+      "name": "refund $20",
+      "request": [
+        "POST /v1/refunds",
+        "GET /v1/charges/ch_\u2026"
+      ],
+      "ms": 1416.3,
+      "result": {
+        "status": 200,
+        "refund_status": "succeeded",
+        "refund_amount": 2000,
+        "charge_amount_refunded": 2000,
+        "charge_refunded": false
+      }
+    },
+    {
+      "step": 5,
+      "name": "refund the rest",
+      "request": [
+        "POST /v1/refunds",
+        "GET /v1/charges/ch_\u2026"
+      ],
+      "ms": 1037.1,
+      "result": {
+        "status": 200,
+        "refund_amount": 3000,
+        "charge_amount_refunded": 5000,
+        "charge_refunded": true
+      }
+    },
+    {
+      "step": 6,
+      "name": "try to refund again",
+      "request": [
+        "POST /v1/refunds"
+      ],
+      "ms": 251.2,
+      "result": {
+        "status": 400,
+        "error": {
+          "type": "invalid_request_error",
+          "code": "charge_already_refunded"
+        }
+      }
+    },
+    {
+      "step": 7,
+      "name": "pay with a card that is declined",
+      "request": [
+        "POST /v1/payment_intents",
+        "GET /v1/payment_intents/pi_\u2026"
+      ],
+      "ms": 1072.3,
+      "result": {
+        "status": 402,
+        "error": {
+          "type": "card_error",
+          "code": "card_declined",
+          "decline_code": "generic_decline"
+        },
+        "pi_status": "requires_payment_method",
+        "last_payment_error_code": "card_declined"
+      }
+    },
+    {
+      "step": 8,
+      "name": "list the customer's charges",
+      "request": [
+        "GET /v1/charges?customer=cus_\u2026&limit=10"
+      ],
+      "ms": 214.6,
+      "result": {
+        "status": 200,
+        "charges": [
+          [
+            "failed",
+            false
+          ],
+          [
+            "succeeded",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "step": 9,
+      "name": "list the events the flow caused",
+      "request": [
+        "GET /v1/events?limit=100"
+      ],
+      "ms": 275.2,
+      "result": {
+        "event_types": {
+          "charge.failed": 1,
+          "charge.refund.updated": 2,
+          "charge.refunded": 2,
+          "charge.succeeded": 1,
+          "charge.updated": 1,
+          "customer.created": 1,
+          "payment_intent.created": 2,
+          "payment_intent.payment_failed": 1,
+          "payment_intent.succeeded": 1,
+          "refund.created": 2,
+          "refund.updated": 2
+        }
+      }
+    }
+  ]
+}

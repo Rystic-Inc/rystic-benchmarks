@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-20T16:14:14Z",
+  "base_url": "http://127.0.0.1:12301",
+  "get_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.055,
+    "p95_ms": 0.067,
+    "p99_ms": 0.145,
+    "mean_ms": 0.06,
+    "total_s": 0.301
+  },
+  "label": "stripe-mock v0.206.0 native",
+  "post_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.056,
+    "p95_ms": 0.069,
+    "p99_ms": 0.175,
+    "mean_ms": 0.059,
+    "total_s": 0.302
+  }
+}

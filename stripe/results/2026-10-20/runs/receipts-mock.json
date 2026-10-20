@@ -1,0 +1,83 @@
+{
+  "label": "stripe-mock v0.206.0",
+  "base_url": "http://127.0.0.1:12111",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-20T16:10:46Z",
+  "calls": [
+    {
+      "id": 1,
+      "name": "retrieve a customer after creating it",
+      "request": [
+        "POST /v1/customers",
+        "GET /v1/customers/cus_\u2026"
+      ],
+      "result": {
+        "status": 200,
+        "email": null
+      }
+    },
+    {
+      "id": 2,
+      "name": "list customers with limit=3",
+      "request": [
+        "POST /v1/customers",
+        "POST /v1/customers",
+        "POST /v1/customers",
+        "POST /v1/customers",
+        "GET /v1/customers?limit=3"
+      ],
+      "result": {
+        "status": 200,
+        "data_count": 1,
+        "has_more": false
+      }
+    },
+    {
+      "id": 3,
+      "name": "charge a card that is declined",
+      "request": [
+        "POST /v1/charges"
+      ],
+      "result": {
+        "status": 200,
+        "charge_status": "succeeded"
+      }
+    },
+    {
+      "id": 4,
+      "name": "reuse an idempotency key with different parameters",
+      "request": [
+        "POST /v1/customers",
+        "POST /v1/customers"
+      ],
+      "result": {
+        "status": 200,
+        "email": "second@example.com"
+      }
+    },
+    {
+      "id": 5,
+      "name": "retrieve a customer after deleting it",
+      "request": [
+        "DELETE /v1/customers/cus_\u2026",
+        "GET /v1/customers/cus_\u2026"
+      ],
+      "result": {
+        "status": 200,
+        "deleted": null,
+        "email": null
+      }
+    },
+    {
+      "id": 6,
+      "name": "retrieve a customer that does not exist",
+      "request": [
+        "GET /v1/customers/cus_doesnotexist"
+      ],
+      "result": {
+        "status": 200,
+        "id": "cus_doesnotexist"
+      }
+    }
+  ]
+}

@@ -1,0 +1,697 @@
+{
+  "measured": "2026-10-20, 9:13-9:15 AM PDT",
+  "method": "The 17 Oct 2026 method, unchanged: startup.py (10 trials per target, process start to first 200 from GET /v1/customers?limit=1, polled every 2 ms) and latency.sh run three times (bench: one keep-alive connection, sequential, 500 warmup + 5,000 measured GET /v1/customers/{id} then the same for POST /v1/customers, Stripe-Version 2026-06-24.dahlia). Only the target list changed: the Rystic targets are pinned to v0.0.18 and v0.0.17 (rystic run -version X) and the bare builds are built at each release commit. home-turf/ holds the startup.py, latency.sh and bench.go used.",
+  "machine": "Apple M5, 32 GB RAM, macOS 26.6 (25G72), Docker 29.8.1; load average about 3.5 during the run (other processes on the machine)",
+  "binaries": {
+    "stripe-mock native": "go install github.com/stripe/stripe-mock@v0.206.0 (Go 1.27.1), the same binary as 17 Oct",
+    "stripe-mock image": "stripe/stripe-mock:v0.206.0@sha256:aeb96b83e87a893d2ac005e363ac01ffa6e59a5ad85b49c155dfc9129de02e78",
+    "bench": "the same bench binary as 17 Oct (bench.go, Go 1.27.1)",
+    "rystic CLI": "0.0.24",
+    "bare builds": "the stripe-twin simulator built from Rystic's source (Go 1.27.1) at the v0.0.18 (b994f46ac) and v0.0.17 (8087629a3) release commits, run directly with RYSTIC_ADDR; these builds are not published, and rystic run is the public route"
+  },
+  "not_covered": "Stripe itself: the home-turf method measures local servers only (no startup, and 5,000 sequential calls would exceed the sandbox rate limit). Wall time per scenario against Stripe is in stripe/README.md, from the scenario runs.",
+  "startup_ms": {
+    "stripe-mock v0.206.0, Docker image": {
+      "trials_ms": [
+        253.0,
+        234.2,
+        247.6,
+        260.2,
+        233.8,
+        239.7,
+        242.3,
+        243.5,
+        246.5,
+        237.5
+      ],
+      "median_ms": 242.9,
+      "min_ms": 233.8,
+      "max_ms": 260.2
+    },
+    "stripe-mock v0.206.0, native binary": {
+      "trials_ms": [
+        205.0,
+        153.0,
+        143.3,
+        145.3,
+        145.9,
+        144.3,
+        147.9,
+        167.8,
+        144.4,
+        145.5
+      ],
+      "median_ms": 145.7,
+      "min_ms": 143.3,
+      "max_ms": 205.0
+    },
+    "Rystic stripe-twin v0.0.18 via rystic run -d": {
+      "trials_ms": [
+        247.9,
+        238.3,
+        238.6,
+        240.3,
+        239.1,
+        241.8,
+        239.1,
+        240.3,
+        242.7,
+        238.9
+      ],
+      "median_ms": 239.7,
+      "min_ms": 238.3,
+      "max_ms": 247.9
+    },
+    "Rystic stripe-twin v0.0.17 via rystic run -d": {
+      "trials_ms": [
+        241.8,
+        245.7,
+        240.2,
+        240.3,
+        241.3,
+        241.4,
+        241.2,
+        244.8,
+        243.6,
+        238.5
+      ],
+      "median_ms": 241.35,
+      "min_ms": 238.5,
+      "max_ms": 245.7
+    },
+    "Rystic simulator binary, bare, source build at v0.0.18 release commit b994f46ac": {
+      "trials_ms": [
+        775.4,
+        19.6,
+        17.0,
+        14.8,
+        13.6,
+        14.3,
+        14.4,
+        13.9,
+        14.0,
+        14.6
+      ],
+      "median_ms": 14.5,
+      "min_ms": 13.6,
+      "max_ms": 775.4
+    },
+    "Rystic simulator binary, bare, source build at v0.0.17 release commit 8087629a3": {
+      "trials_ms": [
+        411.3,
+        19.5,
+        17.3,
+        17.2,
+        14.2,
+        14.2,
+        14.1,
+        14.1,
+        14.4,
+        14.5
+      ],
+      "median_ms": 14.45,
+      "min_ms": 14.1,
+      "max_ms": 411.3
+    }
+  },
+  "latency_ms": {
+    "stripe-mock v0.206.0, Docker image": {
+      "run1": {
+        "get": {
+          "median_ms": 0.162,
+          "p95_ms": 0.193,
+          "p99_ms": 0.22,
+          "mean_ms": 0.167,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.162,
+          "p95_ms": 0.192,
+          "p99_ms": 0.23,
+          "mean_ms": 0.167,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.172,
+          "p95_ms": 0.313,
+          "p99_ms": 0.822,
+          "mean_ms": 0.201,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.163,
+          "p95_ms": 0.197,
+          "p99_ms": 0.277,
+          "mean_ms": 0.168,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.163,
+          "p95_ms": 0.203,
+          "p99_ms": 0.263,
+          "mean_ms": 0.17,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.161,
+          "p95_ms": 0.197,
+          "p99_ms": 0.252,
+          "mean_ms": 0.167,
+          "status": 200
+        }
+      }
+    },
+    "stripe-mock v0.206.0, native binary": {
+      "run1": {
+        "get": {
+          "median_ms": 0.055,
+          "p95_ms": 0.067,
+          "p99_ms": 0.145,
+          "mean_ms": 0.06,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.056,
+          "p95_ms": 0.069,
+          "p99_ms": 0.175,
+          "mean_ms": 0.059,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.06,
+          "p95_ms": 0.073,
+          "p99_ms": 0.169,
+          "mean_ms": 0.064,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.056,
+          "p95_ms": 0.069,
+          "p99_ms": 0.177,
+          "mean_ms": 0.061,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.057,
+          "p95_ms": 0.078,
+          "p99_ms": 0.167,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.058,
+          "p95_ms": 0.076,
+          "p99_ms": 0.224,
+          "mean_ms": 0.064,
+          "status": 200
+        }
+      }
+    },
+    "Rystic stripe-twin v0.0.18 via rystic run -d": {
+      "run1": {
+        "get": {
+          "median_ms": 0.057,
+          "p95_ms": 0.07,
+          "p99_ms": 0.174,
+          "mean_ms": 0.061,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.096,
+          "p95_ms": 0.133,
+          "p99_ms": 0.345,
+          "mean_ms": 0.105,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.057,
+          "p95_ms": 0.067,
+          "p99_ms": 0.171,
+          "mean_ms": 0.06,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.097,
+          "p95_ms": 0.133,
+          "p99_ms": 0.337,
+          "mean_ms": 0.109,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.07,
+          "p99_ms": 0.195,
+          "mean_ms": 0.061,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.097,
+          "p95_ms": 0.137,
+          "p99_ms": 0.335,
+          "mean_ms": 0.106,
+          "status": 200
+        }
+      }
+    },
+    "Rystic stripe-twin v0.0.17 via rystic run -d": {
+      "run1": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.07,
+          "p99_ms": 0.189,
+          "mean_ms": 0.061,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.097,
+          "p95_ms": 0.129,
+          "p99_ms": 0.351,
+          "mean_ms": 0.106,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.071,
+          "p99_ms": 0.184,
+          "mean_ms": 0.061,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.096,
+          "p95_ms": 0.131,
+          "p99_ms": 0.322,
+          "mean_ms": 0.105,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.072,
+          "p99_ms": 0.189,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.096,
+          "p95_ms": 0.131,
+          "p99_ms": 0.338,
+          "mean_ms": 0.106,
+          "status": 200
+        }
+      }
+    },
+    "Rystic simulator binary, bare, source build at v0.0.18 release commit b994f46ac": {
+      "run1": {
+        "get": {
+          "median_ms": 0.057,
+          "p95_ms": 0.071,
+          "p99_ms": 0.156,
+          "mean_ms": 0.06,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.095,
+          "p95_ms": 0.123,
+          "p99_ms": 0.311,
+          "mean_ms": 0.106,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.074,
+          "p99_ms": 0.169,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.096,
+          "p95_ms": 0.115,
+          "p99_ms": 0.158,
+          "mean_ms": 0.106,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.075,
+          "p99_ms": 0.172,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.095,
+          "p95_ms": 0.128,
+          "p99_ms": 0.33,
+          "mean_ms": 0.104,
+          "status": 200
+        }
+      }
+    },
+    "Rystic simulator binary, bare, source build at v0.0.17 release commit 8087629a3": {
+      "run1": {
+        "get": {
+          "median_ms": 0.059,
+          "p95_ms": 0.074,
+          "p99_ms": 0.173,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.095,
+          "p95_ms": 0.132,
+          "p99_ms": 0.333,
+          "mean_ms": 0.109,
+          "status": 200
+        }
+      },
+      "run2": {
+        "get": {
+          "median_ms": 0.058,
+          "p95_ms": 0.073,
+          "p99_ms": 0.17,
+          "mean_ms": 0.062,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.095,
+          "p95_ms": 0.117,
+          "p99_ms": 0.308,
+          "mean_ms": 0.104,
+          "status": 200
+        }
+      },
+      "run3": {
+        "get": {
+          "median_ms": 0.06,
+          "p95_ms": 0.086,
+          "p99_ms": 0.179,
+          "mean_ms": 0.068,
+          "status": 200
+        },
+        "post": {
+          "median_ms": 0.095,
+          "p95_ms": 0.12,
+          "p99_ms": 0.298,
+          "mean_ms": 0.104,
+          "status": 200
+        }
+      }
+    }
+  },
+  "previous_2026_10_17": {
+    "measured": "2026-10-17, about 5:25-5:40 PM PDT",
+    "startup_ms": {
+      "stripe-mock v0.206.0, Docker image": {
+        "trials_ms": [
+          345.4,
+          388.9,
+          428.7,
+          356.6,
+          416.2,
+          366.0,
+          324.5,
+          323.3,
+          335.0,
+          402.1
+        ],
+        "median_ms": 361.3,
+        "min_ms": 323.3,
+        "max_ms": 428.7
+      },
+      "stripe-mock v0.206.0, native binary": {
+        "trials_ms": [
+          187.3,
+          200.3,
+          217.8,
+          205.7,
+          210.5,
+          227.4,
+          203.9,
+          256.0,
+          312.2,
+          232.6
+        ],
+        "median_ms": 214.15,
+        "min_ms": 187.3,
+        "max_ms": 312.2
+      },
+      "Rystic stripe-twin v0.0.14 via rystic run -d": {
+        "trials_ms": [
+          328.6,
+          248.9,
+          253.1,
+          238.4,
+          265.2,
+          247.0,
+          237.0,
+          240.1,
+          249.7,
+          238.7
+        ],
+        "median_ms": 247.95,
+        "min_ms": 237.0,
+        "max_ms": 328.6
+      },
+      "Rystic simulator binary, bare, source build at main 761969dd7": {
+        "trials_ms": [
+          53.1,
+          19.3,
+          18.2,
+          21.3,
+          19.5,
+          17.6,
+          18.6,
+          18.4,
+          18.3,
+          20.5
+        ],
+        "median_ms": 18.95,
+        "min_ms": 17.6,
+        "max_ms": 53.1
+      }
+    },
+    "latency_ms": {
+      "stripe-mock v0.206.0, Docker image": {
+        "run1": {
+          "get": {
+            "median_ms": 0.339,
+            "p95_ms": 0.708,
+            "p99_ms": 1.531,
+            "mean_ms": 0.401,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.339,
+            "p95_ms": 0.654,
+            "p99_ms": 1.269,
+            "mean_ms": 0.402,
+            "status": 200
+          }
+        },
+        "run2": {
+          "get": {
+            "median_ms": 0.302,
+            "p95_ms": 0.672,
+            "p99_ms": 3.024,
+            "mean_ms": 0.406,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.296,
+            "p95_ms": 0.613,
+            "p99_ms": 2.819,
+            "mean_ms": 0.383,
+            "status": 200
+          }
+        },
+        "run3": {
+          "get": {
+            "median_ms": 0.239,
+            "p95_ms": 0.419,
+            "p99_ms": 0.635,
+            "mean_ms": 0.278,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.269,
+            "p95_ms": 0.556,
+            "p99_ms": 0.842,
+            "mean_ms": 0.329,
+            "status": 200
+          }
+        }
+      },
+      "stripe-mock v0.206.0, native binary": {
+        "run1": {
+          "get": {
+            "median_ms": 0.1,
+            "p95_ms": 0.236,
+            "p99_ms": 0.648,
+            "mean_ms": 0.129,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.104,
+            "p95_ms": 0.302,
+            "p99_ms": 1.226,
+            "mean_ms": 0.146,
+            "status": 200
+          }
+        },
+        "run2": {
+          "get": {
+            "median_ms": 0.085,
+            "p95_ms": 0.197,
+            "p99_ms": 0.36,
+            "mean_ms": 0.114,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.088,
+            "p95_ms": 0.18,
+            "p99_ms": 0.342,
+            "mean_ms": 0.112,
+            "status": 200
+          }
+        },
+        "run3": {
+          "get": {
+            "median_ms": 0.062,
+            "p95_ms": 0.112,
+            "p99_ms": 0.225,
+            "mean_ms": 0.076,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.066,
+            "p95_ms": 0.135,
+            "p99_ms": 0.282,
+            "mean_ms": 0.084,
+            "status": 200
+          }
+        }
+      },
+      "Rystic stripe-twin v0.0.14 via rystic run -d": {
+        "run1": {
+          "get": {
+            "median_ms": 0.091,
+            "p95_ms": 0.195,
+            "p99_ms": 1.107,
+            "mean_ms": 0.137,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.115,
+            "p95_ms": 0.294,
+            "p99_ms": 1.045,
+            "mean_ms": 0.166,
+            "status": 200
+          }
+        },
+        "run2": {
+          "get": {
+            "median_ms": 0.078,
+            "p95_ms": 0.167,
+            "p99_ms": 0.289,
+            "mean_ms": 0.097,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.097,
+            "p95_ms": 0.205,
+            "p99_ms": 0.563,
+            "mean_ms": 0.132,
+            "status": 200
+          }
+        },
+        "run3": {
+          "get": {
+            "median_ms": 0.07,
+            "p95_ms": 0.166,
+            "p99_ms": 0.293,
+            "mean_ms": 0.092,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.099,
+            "p95_ms": 0.198,
+            "p99_ms": 0.404,
+            "mean_ms": 0.128,
+            "status": 200
+          }
+        }
+      },
+      "Rystic simulator binary, bare, source build at main 761969dd7": {
+        "run1": {
+          "get": {
+            "median_ms": 0.095,
+            "p95_ms": 0.181,
+            "p99_ms": 0.654,
+            "mean_ms": 0.118,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.139,
+            "p95_ms": 0.562,
+            "p99_ms": 1.577,
+            "mean_ms": 0.217,
+            "status": 200
+          }
+        },
+        "run2": {
+          "get": {
+            "median_ms": 0.072,
+            "p95_ms": 0.145,
+            "p99_ms": 0.274,
+            "mean_ms": 0.089,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.102,
+            "p95_ms": 0.187,
+            "p99_ms": 0.371,
+            "mean_ms": 0.13,
+            "status": 200
+          }
+        },
+        "run3": {
+          "get": {
+            "median_ms": 0.077,
+            "p95_ms": 0.177,
+            "p99_ms": 0.269,
+            "mean_ms": 0.099,
+            "status": 200
+          },
+          "post": {
+            "median_ms": 0.118,
+            "p95_ms": 0.278,
+            "p99_ms": 0.441,
+            "mean_ms": 0.157,
+            "status": 200
+          }
+        }
+      }
+    }
+  },
+  "notes": [
+    "The first startup trial of each fresh bare build (775.4 ms for v0.0.18, 411.3 ms for v0.0.17) includes macOS first-exec checks of a newly built binary; the median is unaffected."
+  ]
+}

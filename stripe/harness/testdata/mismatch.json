@@ -1,0 +1,49 @@
+{
+  "label": "Field Mismatch",
+  "base_url": "http://127.0.0.1:1",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-17T23:28:25Z",
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a customer",
+      "request": [
+        "different"
+      ],
+      "ms": 1.0,
+      "result": {
+        "status": 200
+      }
+    },
+    {
+      "step": 2,
+      "name": "pay $50 with a card",
+      "request": [
+        "different"
+      ],
+      "ms": 1.0,
+      "result": {
+        "status": 200,
+        "pi_status": "succeeded",
+        "charge": "ch_3AbCdEf123",
+        "bt": {
+          "amount": 5000,
+          "fee": null
+        }
+      }
+    },
+    {
+      "step": 3,
+      "name": "list the events the flow caused",
+      "request": [
+        "different"
+      ],
+      "ms": 1.0,
+      "result": {
+        "event_types": {
+          "charge.succeeded": 1
+        }
+      }
+    }
+  ]
+}

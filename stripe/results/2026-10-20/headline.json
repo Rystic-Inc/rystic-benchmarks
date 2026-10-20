@@ -1,0 +1,148 @@
+{
+  "generated": "from the merged files in this directory",
+  "stripe_version": "2026-06-24.dahlia",
+  "scenarios": {
+    "six single calls": {
+      "file": "receipts.json",
+      "calls": 6,
+      "servers": {
+        "stripe": {
+          "label": "Stripe test mode",
+          "total_seconds": null,
+          "run_at": "2026-10-20T16:10:38Z"
+        },
+        "v0.0.18": {
+          "label": "Rystic stripe-twin v0.0.18",
+          "total_seconds": null,
+          "run_at": "2026-10-20T16:10:42Z",
+          "calls_matching_stripe": "6 of 6"
+        },
+        "v0.0.17": {
+          "label": "Rystic stripe-twin v0.0.17",
+          "total_seconds": null,
+          "run_at": "2026-10-20T16:10:44Z",
+          "calls_matching_stripe": "6 of 6"
+        },
+        "mock": {
+          "label": "stripe-mock v0.206.0",
+          "total_seconds": null,
+          "run_at": "2026-10-20T16:10:46Z",
+          "calls_matching_stripe": "0 of 6"
+        }
+      }
+    },
+    "billing flow": {
+      "file": "flow.json",
+      "steps": 7,
+      "servers": {
+        "stripe": {
+          "label": "Stripe test mode",
+          "total_seconds": 14.09,
+          "run_at": "2026-10-20T16:10:41Z",
+          "event_types": 21
+        },
+        "v0.0.18": {
+          "label": "Rystic stripe-twin v0.0.18",
+          "total_seconds": 2.03,
+          "run_at": "2026-10-20T16:10:42Z",
+          "steps_matching_stripe": "7 of 7",
+          "event_types_sent": "21 of 21"
+        },
+        "v0.0.17": {
+          "label": "Rystic stripe-twin v0.0.17",
+          "total_seconds": 2.04,
+          "run_at": "2026-10-20T16:10:44Z",
+          "steps_matching_stripe": "6 of 7",
+          "event_types_sent": "19 of 21",
+          "missing_types": [
+            "invoice.upcoming",
+            "invoice_payment.paid"
+          ]
+        },
+        "mock": {
+          "label": "stripe-mock v0.206.0",
+          "total_seconds": 0.02,
+          "run_at": "2026-10-20T16:10:46Z",
+          "steps_matching_stripe": "4 of 7",
+          "event_types_sent": "0 of 21",
+          "missing_types": [
+            "charge.succeeded",
+            "customer.created",
+            "customer.subscription.created",
+            "customer.subscription.updated",
+            "customer.updated",
+            "invoice.created",
+            "invoice.finalized",
+            "invoice.paid",
+            "invoice.payment_succeeded",
+            "invoice.upcoming",
+            "invoice.updated",
+            "invoice_payment.paid",
+            "payment_intent.created",
+            "payment_intent.succeeded",
+            "payment_method.attached",
+            "plan.created",
+            "price.created",
+            "product.created",
+            "test_helpers.test_clock.advancing",
+            "test_helpers.test_clock.created",
+            "test_helpers.test_clock.ready"
+          ]
+        }
+      }
+    },
+    "payments flow": {
+      "file": "payments.json",
+      "steps": 9,
+      "servers": {
+        "stripe": {
+          "label": "Stripe test mode",
+          "total_seconds": 8.35,
+          "run_at": "2026-10-20T16:10:56Z",
+          "event_types": 11
+        },
+        "v0.0.18": {
+          "label": "Rystic stripe-twin v0.0.18",
+          "total_seconds": 0.02,
+          "run_at": "2026-10-20T16:10:44Z",
+          "steps_matching_stripe": "8 of 9",
+          "event_types_sent": "10 of 11",
+          "missing_types": [
+            "charge.updated"
+          ]
+        },
+        "v0.0.17": {
+          "label": "Rystic stripe-twin v0.0.17",
+          "total_seconds": 0.02,
+          "run_at": "2026-10-20T16:10:46Z",
+          "steps_matching_stripe": "8 of 9",
+          "event_types_sent": "10 of 11",
+          "missing_types": [
+            "charge.updated"
+          ]
+        },
+        "mock": {
+          "label": "stripe-mock v0.206.0",
+          "total_seconds": 0.01,
+          "run_at": "2026-10-20T16:10:46Z",
+          "steps_matching_stripe": "1 of 9",
+          "event_types_sent": "0 of 11 (events step not run)",
+          "missing_types": [
+            "charge.failed",
+            "charge.refund.updated",
+            "charge.refunded",
+            "charge.succeeded",
+            "charge.updated",
+            "customer.created",
+            "payment_intent.created",
+            "payment_intent.payment_failed",
+            "payment_intent.succeeded",
+            "refund.created",
+            "refund.updated"
+          ]
+        }
+      }
+    }
+  },
+  "note": "Event types for the payments flow are counted with compare_payments.compare_events on step 9, the same rule the billing flow's verdict uses; compare_payments.py itself scores that step field by field, so its payments verdict for step 9 also counts a differing per-type count as a mismatch. stripe-mock's payments run stopped after step 2, so its events step did not run."
+}

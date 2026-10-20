@@ -1,0 +1,28 @@
+{
+  "label": "Stripe",
+  "base_url": "https://api.stripe.com",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-17T23:03:28Z",
+  "calls": [
+    {
+      "id": 1,
+      "name": "retrieve a customer after creating it",
+      "request": [
+        "GET /v1/customers/cus_\u2026"
+      ],
+      "result": {
+        "status": 200,
+        "email": "jenny.rosen@example.com"
+      }
+    },
+    {
+      "id": 2,
+      "name": "retrieve a customer that does not exist",
+      "request": [],
+      "result": {
+        "status": 404,
+        "error_code": "resource_missing"
+      }
+    }
+  ]
+}

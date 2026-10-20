@@ -1,0 +1,36 @@
+{
+  "label": "stripe-mock v0.206.0",
+  "base_url": "http://127.0.0.1:12111",
+  "stripe_version": "2026-06-24.dahlia",
+  "run_at": "2026-10-20T16:10:46Z",
+  "total_seconds": 0.01,
+  "steps": [
+    {
+      "step": 1,
+      "name": "create a customer",
+      "request": [
+        "POST /v1/customers"
+      ],
+      "ms": 8.9,
+      "result": {
+        "status": 200
+      }
+    },
+    {
+      "step": 2,
+      "name": "pay $50 with a card, then replay the same request",
+      "request": [
+        "POST /v1/payment_intents",
+        "POST /v1/payment_intents"
+      ],
+      "ms": 3.0,
+      "result": {
+        "status": 200,
+        "pi_status": "requires_payment_method",
+        "amount_received": 0,
+        "replay_status": 200,
+        "replay_same_id": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-20T16:14:16Z",
+  "base_url": "http://127.0.0.1:12302",
+  "get_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.162,
+    "p95_ms": 0.193,
+    "p99_ms": 0.22,
+    "mean_ms": 0.167,
+    "total_s": 0.838
+  },
+  "label": "stripe-mock v0.206.0 docker",
+  "post_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.162,
+    "p95_ms": 0.192,
+    "p99_ms": 0.23,
+    "mean_ms": 0.167,
+    "total_s": 0.84
+  }
+}

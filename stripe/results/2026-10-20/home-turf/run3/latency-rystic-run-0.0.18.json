@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-20T16:14:35Z",
+  "base_url": "http://localhost:53595",
+  "get_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.058,
+    "p95_ms": 0.07,
+    "p99_ms": 0.195,
+    "mean_ms": 0.061,
+    "total_s": 0.308
+  },
+  "label": "stripe-twin v0.0.18 via rystic run",
+  "post_customer": {
+    "n": 5000,
+    "status": 200,
+    "median_ms": 0.097,
+    "p95_ms": 0.137,
+    "p99_ms": 0.335,
+    "mean_ms": 0.106,
+    "total_s": 0.537
+  }
+}
