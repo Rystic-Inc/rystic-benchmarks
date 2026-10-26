@@ -224,7 +224,7 @@ class Cleanup(unittest.TestCase):
 
     def year(self, answers, *args):
         fake = Fake(answers)
-        out = os.path.join(tempfile.mkdtemp(), "out.json")
+        out = self.last_out = os.path.join(tempfile.mkdtemp(), "out.json")
         argv = ["billing_year.py", "--base-url", fake.base, "--customers", "1", "--months", "2",
                 "--poll-s", "0", "--total-min", "0.05", "--out", out] + list(args)
         try:
@@ -248,6 +248,14 @@ class Cleanup(unittest.TestCase):
         self.assertIn("customer: 400 bad", got["error"])
         self.assertEqual((got["clocks_deleted"], got["clocks_not_deleted"]), (0, 1))
         self.assertEqual(paths[-2:], [("POST", "/v1/prices/price_0"), ("POST", "/v1/products/prod_0")])
+
+    def test_billing_year_saves_before_it_deletes(self):
+        def interrupted(c, clocks):
+            raise KeyboardInterrupt
+        with mock.patch.object(billing_year.client, "delete_clocks", interrupted), self.assertRaises(KeyboardInterrupt):
+            self.year(ids("prod", 1) + ids("price", 1) + ids("clock", 1) + [BAD])
+        with open(self.last_out) as f:
+            self.assertIn("customer: 400 bad", json.load(f)["error"])
 
     def test_billing_year_cleans_up_when_it_cant_save(self):
         fake = Fake(ids("prod", 1) + ids("price", 1) + ids("clock", 1) + ids("cus", 1) + ids("sub", 1))

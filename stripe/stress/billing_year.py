@@ -136,6 +136,10 @@ def main():
     except Exception as e:  # record where the run stopped, then still clean up
         out["error"] = "%s: %s" % (type(e).__name__, str(e)[:200])
     finally:
+        try:  # the results so far, in case the deletes are cut short; an unwritable --out stops no delete
+            save()
+        except OSError:
+            pass
         if not a.keep_clocks:
             out["clocks_deleted"], out["clocks_not_deleted"] = client.delete_clocks(c, clocks)
             for path in ([] if price is None else ["/v1/prices/" + price["id"]]) + (
