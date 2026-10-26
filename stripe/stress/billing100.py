@@ -7,7 +7,7 @@ each renewal (the period moved on, and a paid subscription_cycle invoice). At th
 the clocks it made, and with them their customers and subscriptions, unless --keep-clocks is given; Stripe refuses
 to delete a clock still advancing. Each request is tried up to ten times on a 429 (client.TRIES). The setup and the
 waiting are bounded by --setup-min and --total-min; progress prints every minute. The wall time ends with the last
-client.
+client's last check; wall_s_with_deletes adds the deletes.
 
     python3 billing100.py --base-url https://api.stripe.com --key-file ~/stripe.env --clients 10 --out 10.json
     STRIPE_SECRET_KEY=sk_test_local python3 billing100.py --prefix c --clients 50 --out own.json   # one simulator each
@@ -105,10 +105,9 @@ def run_client(base, key, i, setup_deadline, deadline, keep_clocks, progress):
     except Exception as e:  # record where the client stopped
         r["error"] = "%s: %s" % (type(e).__name__, str(e)[:200])
     finally:
+        r["checked_s"] = round(time.monotonic() - t0, 1)
         if not keep_clocks:
-            codes = [c.call("DELETE", "/v1/test_helpers/test_clocks/%s" % k)[0] for k in clocks]
-            r["clocks_deleted"] = sum(1 for s in codes if client.ok(s))
-            r["clocks_not_deleted"] = len(codes) - r["clocks_deleted"]
+            r["clocks_deleted"], r["clocks_not_deleted"] = client.delete_clocks(c, clocks)
         r["ended_s"] = round(time.monotonic() - t0, 1)
     r["requests"], r["r429"] = c.requests, c.r429
     return r
@@ -144,7 +143,11 @@ def main():
 
     def run(i):
         go.wait()
-        res[i] = run_client(bases[i], key, i, setup_deadline, deadline, a.keep_clocks, progress)
+        try:
+            res[i] = run_client(bases[i], key, i, setup_deadline, deadline, a.keep_clocks, progress)
+        except Exception as e:  # a client that crashed still counts
+            t = round(time.monotonic() - t0, 1)
+            res[i] = {"client": i, "error": "%s: %s" % (type(e).__name__, str(e)[:200]), "checked_s": t, "ended_s": t}
 
     th = [threading.Thread(target=run, args=(i,)) for i in range(len(bases))]
     [x.start() for x in th]
@@ -164,7 +167,8 @@ def main():
     for r in res:
         for k, v in (r.get("r429") or {}).items():
             agg429[k] = agg429.get(k, 0) + v
-    out = {"clients": len(bases), "customers_per_client": CUST, "wall_s": max(r["ended_s"] for r in res),
+    out = {"clients": len(bases), "customers_per_client": CUST, "wall_s": max(r["checked_s"] for r in res),
+           "wall_s_with_deletes": max(r["ended_s"] for r in res),
            "customers_created": progress.n["customers"], "subscriptions_created": progress.n["subscriptions"],
            "clocks_total": len(bases) * -(-CUST // PER_CLOCK), "clocks_ready": progress.n["clocks_ready"],
            "first_invoices_ok": sum(r.get("first_invoice_ok", 0) for r in res),

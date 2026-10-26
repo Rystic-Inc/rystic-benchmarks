@@ -63,16 +63,16 @@ class Client:
                 self.local.c = None
                 if attempt:
                     raise
-        with self.lock:
-            self.requests += 1
-            if r.status == 429:
-                reason = "clock-advancing" if ADVANCING.encode() in data else (
-                    r.getheader("Stripe-Rate-Limited-Reason") or ("lock_timeout" if b"lock_timeout" in data else "unlabelled"))
-                self.r429[reason] = self.r429.get(reason, 0) + 1
         try:
             js = json.loads(data) if data else {}
         except ValueError:
             js = {}
+        with self.lock:
+            self.requests += 1
+            if r.status == 429:
+                reason = "clock-advancing" if advancing(js) else (
+                    r.getheader("Stripe-Rate-Limited-Reason") or ("lock_timeout" if b"lock_timeout" in data else "unlabelled"))
+                self.r429[reason] = self.r429.get(reason, 0) + 1
         return r.status, js
 
     def call(self, method, path, params=None, tries=TRIES):
@@ -83,11 +83,30 @@ class Client:
         key = str(uuid.uuid4()) if method == "POST" else None
         for i in range(tries):
             s, js = self.raw(method, path, params, key)
-            if s != 429 or ADVANCING in str(((js or {}).get("error") or {}).get("message")):
+            if s != 429 or advancing(js):
                 return s, js
             if i < tries - 1:
                 time.sleep(min(4.0, 0.25 * 2 ** i) * (0.5 + random.random()))
         return s, js
+
+
+def advancing(js):
+    """Whether a 429 body is Stripe's refusal to change a clock that is still advancing."""
+    return ADVANCING in str(js)
+
+
+def delete_clocks(c, clocks):
+    """Delete each clock, and with it its customers; the counts deleted and not deleted.
+
+    A refused delete or a dropped connection counts as not deleted, and stops no other delete.
+    """
+    deleted = 0
+    for k in clocks:
+        try:
+            deleted += ok(c.call("DELETE", "/v1/test_helpers/test_clocks/%s" % k)[0])
+        except (http.client.HTTPException, OSError):
+            pass
+    return deleted, len(clocks) - deleted
 
 
 def instance_ports(prefix):

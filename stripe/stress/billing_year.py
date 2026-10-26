@@ -14,6 +14,7 @@ product archived, unless --keep-clocks is given.
     STRIPE_SECRET_KEY=sk_test_local python3 billing_year.py --base-url http://127.0.0.1:PORT --out year-rystic.json
 """
 import argparse
+import http.client
 import json
 import time
 from datetime import datetime, timezone
@@ -135,14 +136,14 @@ def main():
     except Exception as e:  # record where the run stopped, then still clean up
         out["error"] = "%s: %s" % (type(e).__name__, str(e)[:200])
     finally:
-        save()
         if not a.keep_clocks:
-            codes = [c.call("DELETE", "/v1/test_helpers/test_clocks/%s" % k)[0] for k in clocks]
-            out["clocks_deleted"] = sum(1 for s in codes if ok(s))
-            out["clocks_not_deleted"] = len(codes) - out["clocks_deleted"]
+            out["clocks_deleted"], out["clocks_not_deleted"] = client.delete_clocks(c, clocks)
             for path in ([] if price is None else ["/v1/prices/" + price["id"]]) + (
                     [] if prod is None else ["/v1/products/" + prod["id"]]):
-                c.call("POST", path, {"active": "false"})
+                try:
+                    c.call("POST", path, {"active": "false"})
+                except (http.client.HTTPException, OSError):
+                    pass
         save()
         print(json.dumps({k: v for k, v in out.items() if k != "rounds"}), flush=True)
 

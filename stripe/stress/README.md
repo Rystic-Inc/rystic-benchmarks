@@ -21,13 +21,14 @@ As in [`../harness/`](../harness/README.md#the-key): `--key-file <path>` or `$ST
 - **Clock waits.** `concurrent_flows.py` waits up to 900 s for a clock, not the harness's 120 s, so a slow advance is measured rather than cut off. It reports how many flows took longer than 120 s as `would_time_out_in_harness`.
 - **Clock checks.** The harness checks a clock once a second. A local simulator finishes an advance within milliseconds, so a 1 s check measures mostly the wait: pass `--poll-s 0.05` to time the simulator itself. `billing_year.py` and `billing100.py` read one clock every 2 s.
 - **Time limits.** `billing100.py` stops a client's setup after `--setup-min` (default 20) and stops waiting for clocks after `--total-min` (default 40), then still checks the renewals on the clocks that finished. `billing_year.py` starts no advance, and stops waiting for clocks, after `--total-min` (default 75). Both then delete, so a run can end later than its limit.
+- **Wall time.** `billing100.py`'s `wall_s` ends with the last client's last check; `wall_s_with_deletes` adds the clock deletes.
 
 ## What a run leaves in the account
 
 - `concurrent_flows.py`: each billing flow deletes its test clock, with the clock's customer and subscription, and archives its price and product, as `run_flow.py` does. A payments flow leaves its customer, payments and refunds, as `run_payments.py` does.
 - `billing_year.py` and `billing100.py` delete the clocks they made at the end, even after an error, and with them the customers and subscriptions, unless given `--keep-clocks`. Products and prices are archived (`billing_year.py`) or left (`billing100.py`).
 - Charges, PaymentIntents, refunds, invoices of deleted customers, events and balance transactions have no delete in Stripe's API and stay.
-- A clock still advancing can't be deleted: Stripe answers 429, "Test clock advancement underway - cannot perform modifications". Both scripts count such clocks as `clocks_not_deleted`; `watch_clocks.py` shows them advancing.
+- A clock still advancing can't be deleted: Stripe answers 429, "Test clock advancement underway - cannot perform modifications". Both scripts count such clocks, and any delete whose connection dropped, as `clocks_not_deleted`; `watch_clocks.py` shows the advancing ones.
 
 ## Reproduce the tables
 

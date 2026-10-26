@@ -137,7 +137,7 @@ K clients at once, each billing its own 100 customers for one month, one request
 | Stripe: wall time | 504.4 s (8.4 min) | 2,061.2 s (34 min) | 2,409.4 s (40 min), when the clock limit stopped the last clients |
 | stripe-twin, one instance per client | 1 of 1 in 0.6 s | 10 of 10 in 2.3 s | 50 of 50 in 19.2 s |
 
-Every renewal the clients checked was paid, on both servers. Each wall time runs to the last client's last check, from each client's `total_s`; clock deletes come after it and aren't counted. The files' own `wall_s` adds up to a minute of the progress loop's wait and, in the 50-client run, the clock deletes, which ran on to 3,420.5 s (57 min) because each refused delete was tried ten times. Files: `clients-x100/`.
+Every renewal the clients checked was paid, on both servers. Each wall time runs to the last client's last check, from each client's `total_s`; clock deletes come after it and aren't counted. The files' own `wall_s` adds up to a minute of the progress loop's wait and, in the 50-client run, the clock deletes, which ran on to 3,420.5 s (57 min) because each refused delete was tried ten times. The current `billing100.py` records the table's measure as `wall_s`, and the time with deletes as `wall_s_with_deletes`. Files: `clients-x100/`.
 
 ### After the 50-client run
 
