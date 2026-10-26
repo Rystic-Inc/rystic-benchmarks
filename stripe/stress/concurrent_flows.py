@@ -92,8 +92,10 @@ def one(kind, base, key, tag, tally, ref):
            "differs": differs, "responses": c.mine,
            "refused": sum(n for s, n in c.mine.items() if isinstance(s, str))}
     if kind == "billing":
-        adv = f.steps[4]
-        out["clock_wait_s"] = round(adv["ms"] / 1000, 1)
+        adv = f.steps[4] if len(f.steps) > 4 else {"result": {}}
+        status = adv["result"].get("status")
+        if isinstance(status, int) and 200 <= status < 300:  # only an advance that was sent has a wait
+            out["clock_wait_s"] = round(adv["ms"] / 1000, 1)
         out["clock_ready"] = adv["result"].get("clock_status") == "ready"
     else:
         out["bt_wait_s"] = f.steps[2].get("waited_s") if len(f.steps) > 2 else None

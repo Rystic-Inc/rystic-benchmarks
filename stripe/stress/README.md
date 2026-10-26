@@ -17,17 +17,17 @@ As in [`../harness/`](../harness/README.md#the-key): `--key-file <path>` or `$ST
 
 ## Retries and timeouts
 
-- **429s.** Stripe's SDKs don't retry a `rate_limit` 429. `billing_year.py`, `billing100.py` and `watch_clocks.py` try each request up to ten times, waiting a jittered 0.25 s, 0.5 s, 1 s, 2 s, then 4 s between tries. `concurrent_flows.py` sends nothing again unless given `--retries N`.
+- **429s.** Stripe's SDKs don't retry a `rate_limit` 429. `billing_year.py`, `billing100.py` and `watch_clocks.py` try each request up to ten times, waiting a jittered 0.25 s, 0.5 s, 1 s, 2 s, then 4 s between tries. A 429 refusing to change a clock that is still advancing isn't a rate limit, and is counted as `clock-advancing` and not sent again. Each POST carries an Idempotency-Key, kept across its tries. `concurrent_flows.py` sends nothing again unless given `--retries N`.
 - **Clock waits.** `concurrent_flows.py` waits up to 900 s for a clock, not the harness's 120 s, so a slow advance is measured rather than cut off. It reports how many flows took longer than 120 s as `would_time_out_in_harness`.
 - **Clock checks.** The harness checks a clock once a second. A local simulator finishes an advance within milliseconds, so a 1 s check measures mostly the wait: pass `--poll-s 0.05` to time the simulator itself. `billing_year.py` and `billing100.py` read one clock every 2 s.
-- **Time limits.** `billing100.py` stops a client's setup after `--setup-min` (default 20) and stops waiting for clocks after `--total-min` (default 40). It then still checks and deletes, so the run can end later than the limit.
+- **Time limits.** `billing100.py` stops a client's setup after `--setup-min` (default 20) and stops waiting for clocks after `--total-min` (default 40), then still checks the renewals on the clocks that finished. `billing_year.py` starts no advance, and stops waiting for clocks, after `--total-min` (default 75). Both then delete, so a run can end later than its limit.
 
 ## What a run leaves in the account
 
 - `concurrent_flows.py`: each billing flow deletes its test clock, with the clock's customer and subscription, and archives its price and product, as `run_flow.py` does. A payments flow leaves its customer, payments and refunds, as `run_payments.py` does.
-- `billing_year.py` and `billing100.py` delete their clocks at the end, and with them the customers and subscriptions, unless given `--keep-clocks`. Products and prices are archived (`billing_year.py`) or left (`billing100.py`).
+- `billing_year.py` and `billing100.py` delete the clocks they made at the end, even after an error, and with them the customers and subscriptions, unless given `--keep-clocks`. Products and prices are archived (`billing_year.py`) or left (`billing100.py`).
 - Charges, PaymentIntents, refunds, invoices of deleted customers, events and balance transactions have no delete in Stripe's API and stay.
-- A clock still advancing can't be deleted: Stripe answers 429, "Test clock advancement underway - cannot perform modifications". A run stopped by its time limit can leave clocks that `watch_clocks.py` will show advancing.
+- A clock still advancing can't be deleted: Stripe answers 429, "Test clock advancement underway - cannot perform modifications". Both scripts count such clocks as `clocks_not_deleted`; `watch_clocks.py` shows them advancing.
 
 ## Reproduce the tables
 
@@ -55,14 +55,19 @@ The recorded one-customer simulator run used `--poll-s 0.05`; at the default 2 s
 **Many clients, 100 customers each** (1, 10 and 50 clients):
 
     python3 billing100.py --base-url https://api.stripe.com --key-file ~/stripe.env --clients 10 --out 10-stripe.json
-    STRIPE_SECRET_KEY=sk_test_local python3 billing100.py --ports P1,P2,...,P10 --clients 10 --out 10-rystic.json
+    for i in $(seq -w 0 9); do rystic run -version 0.0.18 -name h$i -d --port 0 stripe-twin; done
+    STRIPE_SECRET_KEY=sk_test_local python3 billing100.py --prefix h --clients 10 --out 10-rystic.json
+
+`--prefix` gives each client its own running instance, found with `rystic ps --json`; use a prefix no other instance has.
 
 **After the 50-client run:** start `watch_clocks.py` as `billing100.py --clients 50` ends:
 
     python3 watch_clocks.py --key-file ~/stripe.env --out clocks.json
 
+**How the recorded runs differ from these commands.** The 1- and 10-client runs of `billing100.py`, and every year run except stripe-twin's 100-customer one, added `--keep-clocks`. The shared-instance rows of the first table are three runs, one level each, on a freshly reset instance, which is what `--reset-between` does in one run. The 50-client `billing100.py` run on Stripe predates the clean-up after an error ([`../README.md`](../README.md#stress-caveats)).
+
 ## Tests
 
     python3 -m unittest test_stress
 
-The tests cover the advance targets and the client's retries, against a fake server on 127.0.0.1, and check that the recorded Stripe runs used for scoring load.
+The tests cover the advance targets, the client's retries and idempotency keys, and the clean-up after an error, against a fake server on 127.0.0.1, and check that the recorded Stripe runs used for scoring load.

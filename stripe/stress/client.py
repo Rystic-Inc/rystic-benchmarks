@@ -1,16 +1,19 @@
 """The HTTP client the stress scripts share: one keep-alive connection per thread, 429s counted and retried.
 
 Keys are loaded the harness's way (../harness/run_receipts.py): --key-file or $STRIPE_SECRET_KEY, test mode only,
-never printed.
+never printed. Every POST carries an Idempotency-Key, kept across its retries, so a POST sent again after a dropped
+connection can't act twice.
 """
 import http.client
 import json
 import os
 import random
+import subprocess
 import sys
 import threading
 import time
 import urllib.parse
+import uuid
 from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +23,7 @@ from run_receipts import API_VERSION, add_key_args, key_from_args  # noqa: E402,
 START = int(datetime(2026, 11, 1, tzinfo=timezone.utc).timestamp())  # every test clock starts here, as in run_flow.py
 PER_CLOCK = 3  # Stripe's limit of customers per test clock
 TRIES = 10  # attempts per request: a 429 is sent again up to nine times
+ADVANCING = "Test clock advancement underway"  # Stripe's 429 for a change to a clock that is advancing
 
 
 class Client:
@@ -41,9 +45,11 @@ class Client:
             c = self.local.c = cls(self.host, self.port, timeout=60)
         return c
 
-    def raw(self, method, path, params=None):
+    def raw(self, method, path, params=None, idempotency_key=None):
         body = urllib.parse.urlencode(params, doseq=True) if params else None
         headers = {"Authorization": "Bearer " + self.key, "Stripe-Version": API_VERSION}
+        if idempotency_key:
+            headers["Idempotency-Key"] = idempotency_key
         if body:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         for attempt in range(2):
@@ -60,8 +66,8 @@ class Client:
         with self.lock:
             self.requests += 1
             if r.status == 429:
-                reason = r.getheader("Stripe-Rate-Limited-Reason") or (
-                    "lock_timeout" if b"lock_timeout" in data else "unlabelled")
+                reason = "clock-advancing" if ADVANCING.encode() in data else (
+                    r.getheader("Stripe-Rate-Limited-Reason") or ("lock_timeout" if b"lock_timeout" in data else "unlabelled"))
                 self.r429[reason] = self.r429.get(reason, 0) + 1
         try:
             js = json.loads(data) if data else {}
@@ -70,14 +76,24 @@ class Client:
         return r.status, js
 
     def call(self, method, path, params=None, tries=TRIES):
-        """Send a request, sending it again after a 429 with jittered backoff, up to `tries` times in all."""
+        """Send a request, sending it again after a 429 with jittered backoff, up to `tries` times in all.
+
+        A 429 refusing to change a clock that is still advancing isn't a rate limit, and isn't sent again.
+        """
+        key = str(uuid.uuid4()) if method == "POST" else None
         for i in range(tries):
-            s, js = self.raw(method, path, params)
-            if s != 429:
+            s, js = self.raw(method, path, params, key)
+            if s != 429 or ADVANCING in str(((js or {}).get("error") or {}).get("message")):
                 return s, js
             if i < tries - 1:
                 time.sleep(min(4.0, 0.25 * 2 ** i) * (0.5 + random.random()))
         return s, js
+
+
+def instance_ports(prefix):
+    """The ports of the running simulator instances whose names start with prefix, from `rystic ps --json`."""
+    ps = json.loads(subprocess.run(["rystic", "ps", "--json"], capture_output=True, text=True, check=True).stdout)
+    return sorted(i["port"] for i in ps["data"]["instances"] if i["name"].startswith(prefix) and i["status"] == "running")
 
 
 def ok(s):

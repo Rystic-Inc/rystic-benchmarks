@@ -3,11 +3,16 @@
     python3 -m unittest test_stress
 """
 import json
+import os
+import sys
+import tempfile
 import threading
 import unittest
+from unittest import mock
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import billing100
 import billing_year
 import client
 import concurrent_flows
@@ -44,11 +49,13 @@ class Fake:
     """A server that answers each request from a queue of (status, headers, body), then 200 {}."""
 
     def __init__(self, answers):
-        self.answers, self.paths, fake = list(answers), [], self
+        self.answers, self.paths, self.idem, fake = list(answers), [], [], self
 
         class Handler(BaseHTTPRequestHandler):
             def handle_one(self):
                 fake.paths.append((self.command, self.path, self.headers.get("Authorization")))
+                fake.idem.append(self.headers.get("Idempotency-Key"))
+                self.rfile.read(int(self.headers.get("Content-Length") or 0))
                 status, headers, body = fake.answers.pop(0) if fake.answers else (200, {}, {})
                 data = json.dumps(body).encode()
                 self.send_response(status)
@@ -92,6 +99,30 @@ class ClientRetries(unittest.TestCase):
         finally:
             fake.close()
 
+    def test_a_refused_change_to_an_advancing_clock_isnt_sent_again(self):
+        fake = Fake([(429, {}, {"error": {"message": client.ADVANCING + " - cannot perform modifications"}})])
+        try:
+            c = client.Client(fake.base, "sk_test_x")
+            self.assertEqual(c.call("DELETE", "/v1/test_helpers/test_clocks/clock_1")[0], 429)
+            self.assertEqual((c.requests, c.r429), (1, {"clock-advancing": 1}))
+        finally:
+            fake.close()
+
+    def test_a_post_keeps_its_idempotency_key_across_retries(self):
+        fake = Fake([(429, {}, {"error": {"code": "rate_limit"}}), (200, {}, {}), (200, {}, {})])
+        try:
+            c = client.Client(fake.base, "sk_test_x")
+            c.call("POST", "/v1/customers", {"email": "a@example.com"})
+            c.call("POST", "/v1/customers", {"email": "b@example.com"})
+            c.call("GET", "/v1/customers")
+            first, again, second, get = fake.idem
+            self.assertTrue(first)
+            self.assertEqual(first, again)
+            self.assertNotIn(second, (None, first))
+            self.assertIsNone(get)
+        finally:
+            fake.close()
+
     def test_need_names_the_step_and_stripes_message(self):
         with self.assertRaisesRegex(RuntimeError, r"advance: 404 No such clock"):
             client.need(404, {"error": {"message": "No such clock"}}, "advance")
@@ -108,6 +139,57 @@ class WatchClocks(unittest.TestCase):
             self.assertIn("starting_after=clock_a", fake.paths[1][1])
         finally:
             fake.close()
+
+
+def ids(prefix, n):
+    return [(200, {}, {"id": "%s_%d" % (prefix, i)}) for i in range(n)]
+
+
+BAD = (400, {}, {"error": {"message": "bad"}})
+
+
+class Cleanup(unittest.TestCase):
+    def test_billing100_deletes_its_clocks_after_an_error(self):
+        fake = Fake(ids("prod", 1) + ids("price", 1) + ids("clock", 34) + [BAD])
+        try:
+            r = billing100.run_client(fake.base, "sk_test_x", 0, float("inf"), float("inf"), False,
+                                      billing100.Progress())
+        finally:
+            fake.close()
+        self.assertIn("customer: 400 bad", r["error"])
+        deleted = [p for m, p, _ in fake.paths if m == "DELETE"]
+        self.assertEqual(deleted, ["/v1/test_helpers/test_clocks/clock_%d" % i for i in range(34)])
+        self.assertEqual((r["clocks_deleted"], r["clocks_not_deleted"]), (34, 0))
+        self.assertIn("ended_s", r)
+
+    def year(self, answers, *args):
+        fake = Fake(answers)
+        out = os.path.join(tempfile.mkdtemp(), "out.json")
+        argv = ["billing_year.py", "--base-url", fake.base, "--customers", "1", "--months", "2",
+                "--poll-s", "0", "--total-min", "0.05", "--out", out] + list(args)
+        try:
+            with mock.patch.object(sys, "argv", argv), mock.patch.dict(os.environ, {"STRIPE_SECRET_KEY": "sk_test_x"}), \
+                    mock.patch("builtins.print"):
+                billing_year.main()
+        finally:
+            fake.close()
+        with open(out) as f:
+            return json.load(f), [(m, p) for m, p, _ in fake.paths]
+
+    def test_billing_year_cleans_up_after_an_error(self):
+        got, paths = self.year(ids("prod", 1) + ids("price", 1) + ids("clock", 1) + [BAD])
+        self.assertIn("customer: 400 bad", got["error"])
+        self.assertEqual(paths[-3:], [("DELETE", "/v1/test_helpers/test_clocks/clock_0"),
+                                      ("POST", "/v1/prices/price_0"), ("POST", "/v1/products/prod_0")])
+        self.assertEqual(got["clocks_deleted"], 1)
+
+    def test_billing_year_doesnt_wait_on_a_refused_advance(self):
+        got, paths = self.year(ids("prod", 1) + ids("price", 1) + ids("clock", 1) + ids("cus", 1) + ids("sub", 1)
+                               + [BAD])
+        self.assertEqual(got["rounds"][0]["advance_error_count"], 1)
+        self.assertIn("did not complete", got["stopped"])
+        self.assertNotIn(("GET", "/v1/test_helpers/test_clocks/clock_0"), paths)
+        self.assertEqual(paths[-3][0], "DELETE")
 
 
 class Reference(unittest.TestCase):

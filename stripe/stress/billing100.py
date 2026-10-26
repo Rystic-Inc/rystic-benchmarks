@@ -3,12 +3,14 @@
 Each client, one request at a time: a product and $20/month price, 34 test clocks at 1 Nov 2026 (three customers
 per clock, Stripe's limit), 100 customers with a Visa card, 100 subscriptions; checks each first invoice; advances
 its 34 clocks two hours past the renewal and reads one clock every 2 s, round-robin, until each is ready; checks
-each renewal (the period moved on, and a paid subscription_cycle invoice); then deletes its clocks, and with them
-their customers and subscriptions, unless --keep-clocks is given. Each request is tried up to ten times on a 429
-(client.TRIES). The setup and the whole run are bounded by --setup-min and --total-min; progress prints every minute.
+each renewal (the period moved on, and a paid subscription_cycle invoice). At the end, even after an error, it deletes
+the clocks it made, and with them their customers and subscriptions, unless --keep-clocks is given; Stripe refuses
+to delete a clock still advancing. Each request is tried up to ten times on a 429 (client.TRIES). The setup and the
+waiting are bounded by --setup-min and --total-min; progress prints every minute. The wall time ends with the last
+client.
 
     python3 billing100.py --base-url https://api.stripe.com --key-file ~/stripe.env --clients 10 --out 10.json
-    STRIPE_SECRET_KEY=sk_test_local python3 billing100.py --ports 50001,50002 --clients 2 --out own.json
+    STRIPE_SECRET_KEY=sk_test_local python3 billing100.py --prefix c --clients 50 --out own.json   # one simulator each
 """
 import argparse
 import json
@@ -36,13 +38,14 @@ def run_client(base, key, i, setup_deadline, deadline, keep_clocks, progress):
     c = client.Client(base, key)
     t0 = time.monotonic()
     r = {"client": i, "phase": "setup"}
+    clocks = []
     try:
         prod = need(*c.call("POST", "/v1/products", {"name": "Billing 100 client %02d" % i}), "product")
         price = need(*c.call("POST", "/v1/prices", {"product": prod["id"], "unit_amount": 2000,
                                                     "currency": "usd", "recurring[interval]": "month"}), "price")
-        clocks = [need(*c.call("POST", "/v1/test_helpers/test_clocks",
-                               {"frozen_time": START, "name": "c%02d-%02d" % (i, n)}), "clock")["id"]
-                  for n in range(-(-CUST // PER_CLOCK))]
+        for n in range(-(-CUST // PER_CLOCK)):
+            clocks.append(need(*c.call("POST", "/v1/test_helpers/test_clocks",
+                                       {"frozen_time": START, "name": "c%02d-%02d" % (i, n)}), "clock")["id"])
         custs, subs = [], []
         for n in range(CUST):
             if time.monotonic() > setup_deadline:
@@ -99,10 +102,14 @@ def run_client(base, key, i, setup_deadline, deadline, keep_clocks, progress):
         r["renewed_ok"] = renewed
         r["phase"] = "done" if not pending else "clock deadline"
         r["total_s"] = round(time.monotonic() - t0, 1)
-        r["clocks_deleted"] = 0 if keep_clocks else sum(
-            1 for k in clocks if client.ok(c.call("DELETE", "/v1/test_helpers/test_clocks/%s" % k)[0]))
     except Exception as e:  # record where the client stopped
         r["error"] = "%s: %s" % (type(e).__name__, str(e)[:200])
+    finally:
+        if not keep_clocks:
+            codes = [c.call("DELETE", "/v1/test_helpers/test_clocks/%s" % k)[0] for k in clocks]
+            r["clocks_deleted"] = sum(1 for s in codes if client.ok(s))
+            r["clocks_not_deleted"] = len(codes) - r["clocks_deleted"]
+        r["ended_s"] = round(time.monotonic() - t0, 1)
     r["requests"], r["r429"] = c.requests, c.r429
     return r
 
@@ -111,6 +118,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--base-url", help="one server shared by every client")
     ap.add_argument("--ports", help="comma-separated local simulator ports, one per client")
+    ap.add_argument("--prefix", help="one client per running simulator instance whose name starts with this")
     client.add_key_args(ap)
     ap.add_argument("--clients", type=int, default=50)
     ap.add_argument("--setup-min", type=float, default=20)
@@ -118,10 +126,17 @@ def main():
     ap.add_argument("--keep-clocks", action="store_true", help="leave each client's clocks, customers and subscriptions")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    if bool(a.base_url) == bool(a.ports):
-        ap.error("give --base-url or --ports")
+    if sum(bool(x) for x in (a.base_url, a.ports, a.prefix)) != 1:
+        ap.error("give one of --base-url, --ports or --prefix")
     key = client.key_from_args(ap, a)
-    bases = (["http://127.0.0.1:%s" % p for p in a.ports.split(",")] if a.ports else [a.base_url] * a.clients)[:a.clients]
+    if a.base_url:
+        bases = [a.base_url] * a.clients
+    else:
+        ports = a.ports.split(",") if a.ports else client.instance_ports(a.prefix)
+        bases = ["http://127.0.0.1:%s" % p for p in ports][:a.clients]
+        if len(bases) < a.clients:
+            ap.error("%d clients asked for, %d simulator ports found" % (a.clients, len(bases)))
+    local = not a.base_url
     t0 = time.monotonic()
     setup_deadline, deadline = t0 + a.setup_min * 60, t0 + a.total_min * 60
     res, progress = [None] * len(bases), Progress()
@@ -133,26 +148,30 @@ def main():
 
     th = [threading.Thread(target=run, args=(i,)) for i in range(len(bases))]
     [x.start() for x in th]
-    timeline = []
-    while any(x.is_alive() for x in th):
-        time.sleep(1 if a.ports else 60)
+    timeline, tick = [], 1 if local else 60
+    while True:
+        until = time.monotonic() + tick
+        for x in th:
+            x.join(timeout=max(0.0, until - time.monotonic()))
+        if not any(x.is_alive() for x in th):
+            break
         snap = [round(time.monotonic() - t0)] + [progress.n[k] for k in ("customers", "subscriptions", "clocks_ready")]
         timeline.append(snap)
-        if not a.ports:
+        if not local:
             print("t=%ds customers=%d subscriptions=%d clocks_ready=%d" % tuple(snap), flush=True)
-    ok_runs = [r for r in res if "error" not in r and "setup_s" in r]
+    setups = [r["setup_s"] for r in res if "setup_s" in r]
     agg429 = {}
     for r in res:
         for k, v in (r.get("r429") or {}).items():
             agg429[k] = agg429.get(k, 0) + v
-    out = {"clients": len(bases), "customers_per_client": CUST, "wall_s": round(time.monotonic() - t0, 1),
+    out = {"clients": len(bases), "customers_per_client": CUST, "wall_s": max(r["ended_s"] for r in res),
            "customers_created": progress.n["customers"], "subscriptions_created": progress.n["subscriptions"],
            "clocks_total": len(bases) * -(-CUST // PER_CLOCK), "clocks_ready": progress.n["clocks_ready"],
            "first_invoices_ok": sum(r.get("first_invoice_ok", 0) for r in res),
            "renewals_ok": sum(r.get("renewed_ok", 0) for r in res),
            "clients_done": sum(1 for r in res if r.get("phase") == "done"),
-           "setup_s_median": statistics.median(r["setup_s"] for r in ok_runs) if ok_runs else None,
-           "setup_s_max": max((r["setup_s"] for r in ok_runs), default=None),
+           "setup_s_median": statistics.median(setups) if setups else None, "clients_set_up": len(setups),
+           "setup_s_max": max(setups, default=None),
            "errors": sorted({r["error"] for r in res if "error" in r})[:5],
            "requests": sum(r.get("requests", 0) for r in res), "r429": agg429,
            "timeline_s_customers_subs_clocksready": timeline, "per_client": res}

@@ -96,7 +96,7 @@ The first startup trial of each fresh bare build (775.4 ms and 411.3 ms) include
 
 ## Stress test, recorded 24 Oct 2026
 
-The billing flow run many times at once, for many customers and over a year, against Stripe test mode and stripe-twin v0.0.18 (`rystic` CLI 0.0.24), on the same machine as above. The scripts are in [`stress/`](stress/README.md), with the command behind each table; the runs are in `results/2026-10-24/`. stripe-mock is left out: it renews nothing, so there is nothing to time. Every Stripe number is one run, on one Dashboard sandbox with no other work in progress, between 11:00 AM and 4:45 PM PDT.
+The billing flow run many times at once, for many customers and over a year, against Stripe test mode and stripe-twin v0.0.18 (`rystic` CLI 0.0.24), on the same machine as above. The scripts are in [`stress/`](stress/README.md), with the command behind each table; the runs are in `results/2026-10-24/`. stripe-mock is left out: it renews nothing, so there is nothing to time. Every Stripe number is one run, on one Dashboard sandbox with no other work in progress apart from the probe described under [After the 50-client run](#after-the-50-client-run), between 11:00 AM and 4:45 PM PDT.
 
 ### Many clients, one customer each
 
@@ -131,17 +131,17 @@ K clients at once, each billing its own 100 customers for one month, one request
 |---|---|---|---|
 | Stripe: clients that finished | 1 of 1 | 9 of 10 | 4 of 50 |
 | Stripe: clients stopped by 429s | 0 | 1, while sending its advances | 34: 21 during setup, 13 at the advance |
-| Stripe: setup per client, median | 274.4 s | 274.5 s | 446.4 s |
+| Stripe: setup per client, median | 274.4 s | 274.3 s | 437.4 s, over the 29 clients that finished setup |
 | Stripe: renewals paid | 100 of 100 | 900 of 1,000 | 514 of 5,000 |
-| Stripe: 429s / requests | 0 / 602 | 436 / 11,436 | 11,482 / 34,808 |
-| Stripe: wall time | 540.1 s (9 min) | 2,100.1 s (35 min) | 3,420.5 s (57 min); clients stopped waiting for clocks at 40 min |
-| stripe-twin, one instance per client | 1 of 1 in 1.0 s | 10 of 10 in 3.0 s | 50 of 50 in 20.2 s |
+| Stripe: 429s / requests | 0 / 602 | 436 / 11,436 | 11,482 / 34,808, up to 3,610 of them the ten tries at each of 361 refused clock deletes |
+| Stripe: wall time | 504.4 s (8.4 min) | 2,061.2 s (34 min) | 2,409.4 s (40 min), when the clock limit stopped the last clients |
+| stripe-twin, one instance per client | 1 of 1 in 0.6 s | 10 of 10 in 2.3 s | 50 of 50 in 19.2 s |
 
-Every renewal the clients checked was paid, on both servers. Files: `clients-x100/`.
+Every renewal the clients checked was paid, on both servers. Each wall time runs to the last client's last check, from each client's `total_s`; clock deletes come after it and aren't counted. The files' own `wall_s` adds up to a minute of the progress loop's wait and, in the 50-client run, the clock deletes, which ran on to 3,420.5 s (57 min) because each refused delete was tried ten times. Files: `clients-x100/`.
 
 ### After the 50-client run
 
-The 50-client run exited at 1:45 PM PDT with 226 of its clocks still advancing; the last finished at 2:08 PM (`after-50-clients/clocks-advancing.json`). Stripe refuses to delete a clock that is advancing, with a 429, "Test clock advancement underway - cannot perform modifications": 361 of the run's 544 clock deletes were refused (`clients-x100/stripe-50-clients.json`). A one-customer billing flow started at about 1:34 PM, during the backlog, waited 900 s for its clock, which never read `ready` (`after-50-clients/probe-billing-flow.json`). On a quiet sandbox that clock takes 10 to 15 s.
+The 50-client run exited at 1:45 PM PDT with 226 of its clocks still advancing; the last finished at 2:08 PM (`after-50-clients/clocks-advancing.json`). Stripe refuses to delete a clock that is advancing, with a 429, "Test clock advancement underway - cannot perform modifications": 361 of the run's 544 clock deletes were refused (`clients-x100/stripe-50-clients.json`). A one-customer billing flow started at about 1:34 PM, while the run was still deleting its clocks, waited 900 s for its clock, which never read `ready` (`after-50-clients/probe-billing-flow.json`). On a quiet sandbox that clock takes 10 to 15 s.
 
 ### Stress caveats
 
@@ -149,6 +149,8 @@ The 50-client run exited at 1:45 PM PDT with 226 of its clocks still advancing; 
 - **The 1 and 10 rows of the first table come from an earlier run of the events step.** That run read only the account's newest 1,000 events, as the harness did before this change. Up to 25 clients it made no difference, and every flow matched; at 50, the other flows' events pushed 43 flows' own events out of that window. The 50 row comes from a second run with the current events step.
 - **Clock checks.** A check interval adds up to one interval to each clock wait. That matters for the simulator, which finishes an advance in milliseconds, and little for Stripe's waits of 10 s and more.
 - **One shared simulator instance slows with many clients.** Its clock stands still unless moved, so every flow's objects get the same creation time, and each flow's events step pages through every flow's events. One instance per client avoids it.
+- **Clean-up in the recorded 50-client run.** Only the 16 clients that reached the end deleted their clocks; the 34 stopped by 429s left theirs, and 1,409 clocks stayed in the sandbox, 226 of them still advancing. The current `billing100.py` deletes a client's clocks after an error too, and sends a refused delete only once.
+- **Kept clocks.** The 1- and 10-client runs of `billing100.py`, and every year run except stripe-twin's 100-customer one, ran with `--keep-clocks`. No time in the tables includes deleting.
 - **A validation run, 25 Oct.** In one of three one-customer, one-month runs of `billing_year.py` on Stripe, the renewal invoice still read `draft` just after the clock reported `ready`; the other two read it paid. Every recorded run read every renewal paid.
 
 ## Caveats
@@ -223,7 +225,7 @@ Each prints a table of per-step verdicts, ending with how many steps each server
 
 ### 6. Stress test
 
-[`stress/README.md`](stress/README.md) gives the command behind each stress-test table. Run each Stripe test on a sandbox with no other work in progress: the 50-client runs take about an hour and leave clocks advancing for up to half an hour after they end.
+[`stress/README.md`](stress/README.md) gives the command behind each stress-test table. Run each Stripe test on a sandbox with no other work in progress: the 50-client run of `billing100.py` takes about 40 minutes and leaves clocks advancing for up to half an hour after it ends.
 
 ## What's here
 
