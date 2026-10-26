@@ -1,0 +1,42 @@
+{
+ "flow": "billing",
+ "retries_per_429": 0,
+ "reference": "results/2026-10-20/runs (Stripe, 20 Oct 2026)",
+ "levels": [
+  {
+   "flows": 1,
+   "wall_s": 0.1,
+   "retries": 0,
+   "gave_up": 0,
+   "flow_s_median": 0.14,
+   "flow_s_max": 0.14,
+   "all_steps_match": 1,
+   "agrees_hist": {
+    "7": 1
+   },
+   "differing_steps": {},
+   "flows_with_refusals": 0,
+   "responses": {
+    "200": 15
+   },
+   "errors": [],
+   "clock_wait_s_median": 0.1,
+   "clock_wait_s_max": 0.1,
+   "would_time_out_in_harness": 0,
+   "per_flow": [
+    {
+     "seconds": 0.14,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 15
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    }
+   ]
+  }
+ ]
+}

@@ -36,16 +36,16 @@ Local servers accept any test-shaped placeholder, such as `sk_test_receipts`.
     # Score against Stripe
     python3 compare_payments.py receipts-stripe.json receipts-v0.0.18.json receipts-mock.json --out receipts.json
 
-`run_flow.py` and `run_payments.py` take the same flags. `run_flow.py` deletes its test clock (and with it the clock's customer and subscription) at the end, even after failed steps, and archives its price and product; `--keep` leaves them in place.
+`run_flow.py` and `run_payments.py` take the same flags. `run_flow.py` deletes its test clock (and with it the clock's customer and subscription) at the end, even after failed steps, and archives its price and product; `--keep` leaves them in place. It checks the clock once a second while it advances; `--poll-s` changes that, e.g. `--poll-s 0.05` to time a local simulator rather than the wait between checks.
 
 Every call sends `Stripe-Version: 2026-06-24.dahlia` (change it with `--stripe-version`).
 
 ## What is recorded and compared
 
-Each run records, per step, the observable answer (status codes and chosen fields), the request lines with object ids masked to their prefix (`cus_…`), and timings. `compare_payments.py` compares each step's answer field by field with Stripe's. It never compares timings, request lines or masked ids. In the billing flow it compares times only as offsets from the test clock, scores a step that was not run as not matching, and reports which of Stripe's event types each server sent.
+Each run records, per step, the observable answer (status codes and chosen fields), the request lines with object ids masked to their prefix (`cus_…`), and timings. `compare_payments.py` compares each step's answer field by field with Stripe's. It never compares timings, request lines or masked ids. In the billing flow it compares times only as offsets from the test clock, scores a step that was not run as not matching, and reports which of Stripe's event types each server sent. Each flow's events step reads every event created since the flow's first object, so other runs in the same account can't crowd its own events out.
 
 ## Tests
 
-    python3 -m unittest test_compare_payments      # or: python3 -m pytest
+    python3 -m unittest test_compare_payments test_events      # or: python3 -m pytest
 
 The tests run against a small fake Stripe-shaped server and the synthetic fixtures in `testdata/`. They make no network calls beyond 127.0.0.1.

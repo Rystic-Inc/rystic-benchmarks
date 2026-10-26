@@ -1,0 +1,1218 @@
+{
+ "clients": 50,
+ "customers_per_client": 100,
+ "wall_s": 3420.5,
+ "customers_created": 4000,
+ "subscriptions_created": 3165,
+ "clocks_total": 1700,
+ "clocks_ready": 174,
+ "first_invoices_ok": 2900,
+ "renewals_ok": 514,
+ "clients_done": 4,
+ "setup_s_median": 446.4,
+ "setup_s_max": 469.1,
+ "errors": [
+  "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+  "RuntimeError: clock: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+  "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+  "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits."
+ ],
+ "requests": 34808,
+ "r429": {
+  "endpoint-concurrency": 1204,
+  "endpoint-rate": 5329,
+  "resource-specific": 4949
+ },
+ "timeline_s_customers_subs_clocksready": [
+  [
+   60,
+   686,
+   0,
+   0
+  ],
+  [
+   120,
+   2187,
+   0,
+   0
+  ],
+  [
+   180,
+   3687,
+   158,
+   0
+  ],
+  [
+   240,
+   4000,
+   848,
+   0
+  ],
+  [
+   300,
+   4000,
+   1545,
+   0
+  ],
+  [
+   360,
+   4000,
+   2250,
+   0
+  ],
+  [
+   420,
+   4000,
+   2925,
+   0
+  ],
+  [
+   480,
+   4000,
+   3165,
+   10
+  ],
+  [
+   540,
+   4000,
+   3165,
+   23
+  ],
+  [
+   600,
+   4000,
+   3165,
+   34
+  ],
+  [
+   660,
+   4000,
+   3165,
+   36
+  ],
+  [
+   720,
+   4000,
+   3165,
+   54
+  ],
+  [
+   780,
+   4000,
+   3165,
+   65
+  ],
+  [
+   840,
+   4000,
+   3165,
+   74
+  ],
+  [
+   900,
+   4000,
+   3165,
+   82
+  ],
+  [
+   960,
+   4000,
+   3165,
+   92
+  ],
+  [
+   1020,
+   4000,
+   3165,
+   96
+  ],
+  [
+   1080,
+   4000,
+   3165,
+   100
+  ],
+  [
+   1140,
+   4000,
+   3165,
+   102
+  ],
+  [
+   1200,
+   4000,
+   3165,
+   106
+  ],
+  [
+   1260,
+   4000,
+   3165,
+   111
+  ],
+  [
+   1320,
+   4000,
+   3165,
+   118
+  ],
+  [
+   1380,
+   4000,
+   3165,
+   118
+  ],
+  [
+   1440,
+   4000,
+   3165,
+   122
+  ],
+  [
+   1500,
+   4000,
+   3165,
+   123
+  ],
+  [
+   1560,
+   4000,
+   3165,
+   128
+  ],
+  [
+   1620,
+   4000,
+   3165,
+   129
+  ],
+  [
+   1680,
+   4000,
+   3165,
+   131
+  ],
+  [
+   1740,
+   4000,
+   3165,
+   134
+  ],
+  [
+   1800,
+   4000,
+   3165,
+   136
+  ],
+  [
+   1860,
+   4000,
+   3165,
+   138
+  ],
+  [
+   1920,
+   4000,
+   3165,
+   139
+  ],
+  [
+   1980,
+   4000,
+   3165,
+   143
+  ],
+  [
+   2040,
+   4000,
+   3165,
+   147
+  ],
+  [
+   2100,
+   4000,
+   3165,
+   149
+  ],
+  [
+   2160,
+   4000,
+   3165,
+   162
+  ],
+  [
+   2220,
+   4000,
+   3165,
+   166
+  ],
+  [
+   2280,
+   4000,
+   3165,
+   167
+  ],
+  [
+   2340,
+   4000,
+   3165,
+   173
+  ],
+  [
+   2400,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2460,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2520,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2580,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2640,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2700,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2760,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2820,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2880,
+   4000,
+   3165,
+   174
+  ],
+  [
+   2940,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3000,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3060,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3120,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3180,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3240,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3300,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3360,
+   4000,
+   3165,
+   174
+  ],
+  [
+   3420,
+   4000,
+   3165,
+   174
+  ]
+ ],
+ "per_client": [
+  {
+   "client": 0,
+   "phase": "setup",
+   "error": "RuntimeError: clock: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 29,
+   "r429": {
+    "endpoint-concurrency": 1,
+    "endpoint-rate": 19
+   }
+  },
+  {
+   "client": 1,
+   "phase": "advance",
+   "setup_s": 418.8,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 465,
+   "r429": {
+    "endpoint-concurrency": 42,
+    "endpoint-rate": 115,
+    "resource-specific": 55
+   }
+  },
+  {
+   "client": 2,
+   "phase": "setup",
+   "error": "RuntimeError: clock: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 17,
+   "r429": {
+    "endpoint-concurrency": 1,
+    "endpoint-rate": 11
+   }
+  },
+  {
+   "client": 3,
+   "phase": "clock deadline",
+   "setup_s": 461.6,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 542.6,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.8,
+   "clocks_deleted": 0,
+   "requests": 1728,
+   "r429": {
+    "endpoint-concurrency": 34,
+    "endpoint-rate": 124,
+    "resource-specific": 398
+   }
+  },
+  {
+   "client": 4,
+   "phase": "done",
+   "setup_s": 409.2,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 449.5,
+   "clocks_ready": 34,
+   "clock_ready_at_s": [
+    1150.2,
+    1150.2,
+    1150.3,
+    1150.3,
+    1212.2,
+    1212.3,
+    1212.3,
+    1212.4,
+    1212.5,
+    1264.0,
+    1264.0,
+    1264.1,
+    1264.2,
+    1394.1,
+    1435.3,
+    1435.4,
+    1435.4,
+    1470.5,
+    1503.5,
+    1503.6,
+    1532.6,
+    1532.6,
+    1532.7,
+    1578.1,
+    1660.6,
+    1697.7,
+    1928.6,
+    1957.4,
+    1982.2,
+    2075.3,
+    2091.9,
+    2116.7,
+    2116.8,
+    2118.9
+   ],
+   "renewed_ok": 100,
+   "total_s": 2139.8,
+   "clocks_deleted": 34,
+   "requests": 1532,
+   "r429": {
+    "endpoint-rate": 103,
+    "endpoint-concurrency": 34,
+    "resource-specific": 48
+   }
+  },
+  {
+   "client": 5,
+   "phase": "setup",
+   "error": "RuntimeError: clock: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 30,
+   "r429": {
+    "endpoint-concurrency": 1,
+    "endpoint-rate": 22
+   }
+  },
+  {
+   "client": 6,
+   "phase": "clock deadline",
+   "setup_s": 453.4,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 531.0,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.0,
+   "clocks_deleted": 2,
+   "requests": 1729,
+   "r429": {
+    "endpoint-concurrency": 33,
+    "endpoint-rate": 135,
+    "resource-specific": 382
+   }
+  },
+  {
+   "client": 7,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 89,
+   "r429": {
+    "endpoint-concurrency": 1,
+    "endpoint-rate": 52
+   }
+  },
+  {
+   "client": 8,
+   "phase": "done",
+   "setup_s": 391.5,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 397.1,
+   "clocks_ready": 34,
+   "clock_ready_at_s": [
+    607.1,
+    607.1,
+    673.0,
+    673.1,
+    673.1,
+    673.2,
+    673.2,
+    673.3,
+    673.3,
+    673.4,
+    673.5,
+    673.5,
+    673.6,
+    716.9,
+    716.9,
+    717.0,
+    717.0,
+    717.1,
+    717.2,
+    717.2,
+    746.1,
+    746.2,
+    746.2,
+    746.3,
+    748.4,
+    764.9,
+    765.0,
+    765.0,
+    777.5,
+    777.5,
+    779.7,
+    790.0,
+    796.2,
+    798.3
+   ],
+   "renewed_ok": 100,
+   "total_s": 819.9,
+   "clocks_deleted": 34,
+   "requests": 862,
+   "r429": {
+    "endpoint-concurrency": 21,
+    "endpoint-rate": 109
+   }
+  },
+  {
+   "client": 9,
+   "phase": "advance",
+   "setup_s": 442.0,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 429,
+   "r429": {
+    "endpoint-concurrency": 44,
+    "endpoint-rate": 137,
+    "resource-specific": 11
+   }
+  },
+  {
+   "client": 10,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 128,
+   "r429": {
+    "endpoint-concurrency": 2,
+    "endpoint-rate": 67
+   }
+  },
+  {
+   "client": 11,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 360,
+   "r429": {
+    "endpoint-concurrency": 30,
+    "endpoint-rate": 124
+   }
+  },
+  {
+   "client": 12,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 132,
+   "r429": {
+    "endpoint-concurrency": 2,
+    "endpoint-rate": 82
+   }
+  },
+  {
+   "client": 13,
+   "phase": "clock deadline",
+   "setup_s": 458.6,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 509.7,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.7,
+   "clocks_deleted": 2,
+   "requests": 1734,
+   "r429": {
+    "endpoint-rate": 128,
+    "endpoint-concurrency": 32,
+    "resource-specific": 384
+   }
+  },
+  {
+   "client": 14,
+   "phase": "advance",
+   "setup_s": 404.9,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 475,
+   "r429": {
+    "endpoint-concurrency": 35,
+    "endpoint-rate": 137,
+    "resource-specific": 44
+   }
+  },
+  {
+   "client": 15,
+   "phase": "clock deadline",
+   "setup_s": 453.1,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 538.8,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.7,
+   "clocks_deleted": 0,
+   "requests": 1753,
+   "r429": {
+    "endpoint-concurrency": 45,
+    "endpoint-rate": 138,
+    "resource-specific": 396
+   }
+  },
+  {
+   "client": 16,
+   "phase": "done",
+   "setup_s": 401.3,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 411.8,
+   "clocks_ready": 34,
+   "clock_ready_at_s": [
+    831.8,
+    831.9,
+    831.9,
+    832.0,
+    832.1,
+    832.1,
+    890.0,
+    890.0,
+    890.1,
+    890.1,
+    890.2,
+    890.2,
+    890.3,
+    890.3,
+    931.7,
+    931.7,
+    931.8,
+    931.8,
+    931.9,
+    932.0,
+    932.0,
+    932.1,
+    934.2,
+    954.9,
+    975.6,
+    975.7,
+    1008.7,
+    1008.7,
+    1021.2,
+    1031.7,
+    1048.3,
+    1073.1,
+    1081.4,
+    1083.5
+   ],
+   "renewed_ok": 100,
+   "total_s": 1104.9,
+   "clocks_deleted": 34,
+   "requests": 1018,
+   "r429": {
+    "endpoint-concurrency": 38,
+    "endpoint-rate": 106,
+    "resource-specific": 11
+   }
+  },
+  {
+   "client": 17,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 130,
+   "r429": {
+    "endpoint-rate": 78
+   }
+  },
+  {
+   "client": 18,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 126,
+   "r429": {
+    "endpoint-rate": 49
+   }
+  },
+  {
+   "client": 19,
+   "phase": "setup",
+   "error": "RuntimeError: clock: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 36,
+   "r429": {
+    "endpoint-concurrency": 2,
+    "endpoint-rate": 20
+   }
+  },
+  {
+   "client": 20,
+   "phase": "clock deadline",
+   "setup_s": 449.2,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 530.8,
+   "clocks_ready": 1,
+   "clock_ready_at_s": [
+    2282.4
+   ],
+   "renewed_ok": 3,
+   "total_s": 2402.4,
+   "clocks_deleted": 1,
+   "requests": 1746,
+   "r429": {
+    "endpoint-concurrency": 32,
+    "endpoint-rate": 132,
+    "resource-specific": 396
+   }
+  },
+  {
+   "client": 21,
+   "phase": "done",
+   "setup_s": 370.9,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 375.9,
+   "clocks_ready": 34,
+   "clock_ready_at_s": [
+    446.2,
+    446.3,
+    446.3,
+    446.4,
+    446.5,
+    446.5,
+    446.6,
+    446.6,
+    446.7,
+    448.8,
+    496.2,
+    496.2,
+    496.3,
+    496.3,
+    496.4,
+    496.5,
+    498.6,
+    531.6,
+    531.7,
+    531.7,
+    531.8,
+    531.8,
+    531.9,
+    554.6,
+    554.6,
+    554.7,
+    554.8,
+    569.3,
+    571.4,
+    579.7,
+    579.7,
+    586.0,
+    588.1,
+    594.3
+   ],
+   "renewed_ok": 100,
+   "total_s": 615.4,
+   "clocks_deleted": 34,
+   "requests": 770,
+   "r429": {
+    "endpoint-concurrency": 31,
+    "endpoint-rate": 96
+   }
+  },
+  {
+   "client": 22,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 309,
+   "r429": {
+    "endpoint-rate": 134,
+    "endpoint-concurrency": 15
+   }
+  },
+  {
+   "client": 23,
+   "phase": "clock deadline",
+   "setup_s": 437.4,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 523.5,
+   "clocks_ready": 5,
+   "clock_ready_at_s": [
+    1856.3,
+    1856.3,
+    2317.6,
+    2317.7,
+    2379.5
+   ],
+   "renewed_ok": 15,
+   "total_s": 2403.2,
+   "clocks_deleted": 8,
+   "requests": 1745,
+   "r429": {
+    "endpoint-concurrency": 37,
+    "endpoint-rate": 138,
+    "resource-specific": 347
+   }
+  },
+  {
+   "client": 24,
+   "phase": "advance",
+   "setup_s": 453.7,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 473,
+   "r429": {
+    "endpoint-concurrency": 46,
+    "endpoint-rate": 156,
+    "resource-specific": 27
+   }
+  },
+  {
+   "client": 25,
+   "phase": "advance",
+   "setup_s": 437.6,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 385,
+   "r429": {
+    "endpoint-concurrency": 19,
+    "endpoint-rate": 94,
+    "resource-specific": 27
+   }
+  },
+  {
+   "client": 26,
+   "phase": "clock deadline",
+   "setup_s": 443.6,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 538.9,
+   "clocks_ready": 3,
+   "clock_ready_at_s": [
+    2012.3,
+    2216.2,
+    2282.1
+   ],
+   "renewed_ok": 9,
+   "total_s": 2403.4,
+   "clocks_deleted": 3,
+   "requests": 1745,
+   "r429": {
+    "endpoint-concurrency": 36,
+    "endpoint-rate": 128,
+    "resource-specific": 384
+   }
+  },
+  {
+   "client": 27,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 287,
+   "r429": {
+    "endpoint-concurrency": 16,
+    "endpoint-rate": 124
+   }
+  },
+  {
+   "client": 28,
+   "phase": "clock deadline",
+   "setup_s": 468.8,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 543.9,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.3,
+   "clocks_deleted": 0,
+   "requests": 1724,
+   "r429": {
+    "endpoint-concurrency": 36,
+    "endpoint-rate": 126,
+    "resource-specific": 391
+   }
+  },
+  {
+   "client": 29,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 106,
+   "r429": {
+    "endpoint-concurrency": 2,
+    "endpoint-rate": 53
+   }
+  },
+  {
+   "client": 30,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 277,
+   "r429": {
+    "endpoint-rate": 116,
+    "endpoint-concurrency": 11
+   }
+  },
+  {
+   "client": 31,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 169,
+   "r429": {
+    "endpoint-concurrency": 1,
+    "endpoint-rate": 90
+   }
+  },
+  {
+   "client": 32,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 299,
+   "r429": {
+    "endpoint-concurrency": 20,
+    "endpoint-rate": 115
+   }
+  },
+  {
+   "client": 33,
+   "phase": "advance",
+   "setup_s": 419.0,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 475,
+   "r429": {
+    "endpoint-concurrency": 36,
+    "endpoint-rate": 102,
+    "resource-specific": 70
+   }
+  },
+  {
+   "client": 34,
+   "phase": "advance",
+   "setup_s": 411.6,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 458,
+   "r429": {
+    "endpoint-concurrency": 34,
+    "endpoint-rate": 109,
+    "resource-specific": 57
+   }
+  },
+  {
+   "client": 35,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 351,
+   "r429": {
+    "endpoint-rate": 129,
+    "endpoint-concurrency": 34
+   }
+  },
+  {
+   "client": 36,
+   "phase": "setup",
+   "error": "RuntimeError: customer: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 204,
+   "r429": {
+    "endpoint-rate": 117
+   }
+  },
+  {
+   "client": 37,
+   "phase": "advance",
+   "setup_s": 446.5,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 433,
+   "r429": {
+    "endpoint-concurrency": 37,
+    "endpoint-rate": 122,
+    "resource-specific": 27
+   }
+  },
+  {
+   "client": 38,
+   "phase": "advance",
+   "setup_s": 406.1,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 434,
+   "r429": {
+    "endpoint-concurrency": 46,
+    "endpoint-rate": 97,
+    "resource-specific": 34
+   }
+  },
+  {
+   "client": 39,
+   "phase": "clock deadline",
+   "setup_s": 469.1,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 540.0,
+   "clocks_ready": 0,
+   "clock_ready_at_s": [],
+   "renewed_ok": 0,
+   "total_s": 2401.3,
+   "clocks_deleted": 0,
+   "requests": 1722,
+   "r429": {
+    "endpoint-rate": 108,
+    "endpoint-concurrency": 42,
+    "resource-specific": 399
+   }
+  },
+  {
+   "client": 40,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 318,
+   "r429": {
+    "endpoint-concurrency": 32,
+    "endpoint-rate": 134
+   }
+  },
+  {
+   "client": 41,
+   "phase": "advance",
+   "setup_s": 430.5,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 432,
+   "r429": {
+    "endpoint-concurrency": 28,
+    "endpoint-rate": 122,
+    "resource-specific": 32
+   }
+  },
+  {
+   "client": 42,
+   "phase": "clock deadline",
+   "setup_s": 449.8,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 529.7,
+   "clocks_ready": 2,
+   "clock_ready_at_s": [
+    2141.5,
+    2209.5
+   ],
+   "renewed_ok": 6,
+   "total_s": 2402.2,
+   "clocks_deleted": 2,
+   "requests": 1739,
+   "r429": {
+    "endpoint-rate": 121,
+    "endpoint-concurrency": 36,
+    "resource-specific": 388
+   }
+  },
+  {
+   "client": 43,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 322,
+   "r429": {
+    "endpoint-concurrency": 22,
+    "endpoint-rate": 135
+   }
+  },
+  {
+   "client": 44,
+   "phase": "setup",
+   "error": "RuntimeError: subscription: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 313,
+   "r429": {
+    "endpoint-concurrency": 16,
+    "endpoint-rate": 140
+   }
+  },
+  {
+   "client": 45,
+   "phase": "advance",
+   "setup_s": 411.6,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 415,
+   "r429": {
+    "endpoint-concurrency": 19,
+    "endpoint-rate": 129,
+    "resource-specific": 17
+   }
+  },
+  {
+   "client": 46,
+   "phase": "advance",
+   "setup_s": 429.5,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 437,
+   "r429": {
+    "endpoint-rate": 129,
+    "endpoint-concurrency": 23,
+    "resource-specific": 35
+   }
+  },
+  {
+   "client": 47,
+   "phase": "advance",
+   "setup_s": 432.5,
+   "first_invoice_ok": 100,
+   "error": "RuntimeError: advance: 429 Request rate limit exceeded. You can learn more about rate limits here https://stripe.com/docs/rate-limits.",
+   "requests": 472,
+   "r429": {
+    "endpoint-concurrency": 41,
+    "endpoint-rate": 122,
+    "resource-specific": 48
+   }
+  },
+  {
+   "client": 48,
+   "phase": "clock deadline",
+   "setup_s": 442.9,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 496.6,
+   "clocks_ready": 15,
+   "clock_ready_at_s": [
+    1968.7,
+    2036.7,
+    2102.8,
+    2102.9,
+    2103.0,
+    2103.1,
+    2103.1,
+    2158.7,
+    2158.8,
+    2158.9,
+    2208.4,
+    2208.4,
+    2253.8,
+    2297.0,
+    2338.3
+   ],
+   "renewed_ok": 45,
+   "total_s": 2409.4,
+   "clocks_deleted": 15,
+   "requests": 1724,
+   "r429": {
+    "endpoint-rate": 133,
+    "endpoint-concurrency": 32,
+    "resource-specific": 246
+   }
+  },
+  {
+   "client": 49,
+   "phase": "clock deadline",
+   "setup_s": 417.5,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 522.5,
+   "clocks_ready": 12,
+   "clock_ready_at_s": [
+    1293.7,
+    1293.8,
+    1293.8,
+    1677.7,
+    1739.7,
+    1739.7,
+    1797.4,
+    1797.5,
+    1904.6,
+    1956.2,
+    2005.7,
+    2100.5
+   ],
+   "renewed_ok": 36,
+   "total_s": 2408.3,
+   "clocks_deleted": 14,
+   "requests": 1722,
+   "r429": {
+    "endpoint-rate": 122,
+    "endpoint-concurrency": 26,
+    "resource-specific": 295
+   }
+  }
+ ]
+}

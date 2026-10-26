@@ -1,0 +1,124 @@
+{
+ "clients": 1,
+ "customers_per_client": 100,
+ "wall_s": 540.1,
+ "customers_created": 100,
+ "subscriptions_created": 100,
+ "clocks_total": 34,
+ "clocks_ready": 34,
+ "first_invoices_ok": 100,
+ "renewals_ok": 100,
+ "clients_done": 1,
+ "setup_s_median": 274.4,
+ "setup_s_max": 274.4,
+ "errors": [],
+ "requests": 602,
+ "r429": {},
+ "timeline_s_customers_subs_clocksready": [
+  [
+   60,
+   98,
+   0,
+   0
+  ],
+  [
+   120,
+   100,
+   26,
+   0
+  ],
+  [
+   180,
+   100,
+   54,
+   0
+  ],
+  [
+   240,
+   100,
+   82,
+   0
+  ],
+  [
+   300,
+   100,
+   100,
+   0
+  ],
+  [
+   360,
+   100,
+   100,
+   12
+  ],
+  [
+   420,
+   100,
+   100,
+   19
+  ],
+  [
+   480,
+   100,
+   100,
+   33
+  ],
+  [
+   540,
+   100,
+   100,
+   34
+  ]
+ ],
+ "per_client": [
+  {
+   "client": 0,
+   "phase": "done",
+   "setup_s": 274.4,
+   "first_invoice_ok": 100,
+   "advances_sent_s": 279.3,
+   "clocks_ready": 34,
+   "clock_ready_at_s": [
+    349.5,
+    349.6,
+    349.6,
+    349.7,
+    349.7,
+    349.8,
+    349.8,
+    349.9,
+    350.0,
+    350.0,
+    350.1,
+    352.2,
+    395.5,
+    395.6,
+    395.6,
+    395.7,
+    395.7,
+    395.8,
+    395.8,
+    426.8,
+    426.8,
+    426.9,
+    427.0,
+    427.0,
+    447.7,
+    447.7,
+    447.8,
+    447.8,
+    460.3,
+    460.3,
+    466.6,
+    466.6,
+    466.7,
+    483.2
+   ],
+   "renewed_ok": 100,
+   "total_s": 504.4,
+   "clocks_deleted": 0,
+   "requests": 602,
+   "r429": {}
+  }
+ ]
+}

@@ -24,6 +24,7 @@ from run_receipts import API_VERSION, Client, add_key_args, error_of, field, key
 START = int(datetime(2026, 11, 1, tzinfo=timezone.utc).timestamp())
 HOUR = 3600
 CLOCK_WAIT_S = 120
+POLL_S = 1  # seconds between clock checks in the advance step; --poll-s
 
 
 def err_summary(status, body):
@@ -60,6 +61,7 @@ class Flow:
         self.steps = []
         self.ids = {}
         self.period_end = None
+        self.since = None  # the server's time when the flow made its first object
 
     def record(self, name, result, started):
         self.steps.append({"step": len(self.steps) + 1, "name": name,
@@ -95,6 +97,8 @@ class Flow:
         if not ok(s) or not field(prod, "id"):
             return err_summary(s, prod)
         self.ids["product"] = prod["id"]
+        if isinstance(field(prod, "created"), int):
+            self.since = prod["created"]
         s, price = self.call("POST", "/v1/prices", {
             "product": prod["id"], "unit_amount": "2000", "currency": "usd",
             "recurring[interval]": "month"})
@@ -162,7 +166,7 @@ class Flow:
         polls, clock_status, frozen = 0, field(adv, "status"), field(adv, "frozen_time")
         if ok(s):
             while clock_status != "ready" and time.monotonic() - t < CLOCK_WAIT_S:
-                time.sleep(1)
+                time.sleep(POLL_S)
                 polls += 1
                 _, cl = self.call("GET", "/v1/test_helpers/test_clocks/%s" % clock)
                 clock_status, frozen = field(cl, "status"), field(cl, "frozen_time")
@@ -191,11 +195,12 @@ class Flow:
         return {"event_types": self.events()}
 
     def events(self):
-        """Event types whose object is one this flow created, counted."""
+        """Event types whose object is one this flow created, counted, from every event since the flow began."""
         mine = {v for k, v in self.ids.items() if isinstance(v, str)} | set(self.ids.get("invoices", []))
+        since = "&created%%5Bgte%%5D=%d" % self.since if self.since is not None else ""
         counts, after = {}, None
-        for _ in range(10):
-            path = "/v1/events?limit=100" + ("&starting_after=" + after if after else "")
+        for _ in range(1000):  # a guard against a list that never ends, not a window
+            path = "/v1/events?limit=100" + since + ("&starting_after=" + after if after else "")
             s, page = self.call("GET", path)
             data = field(page, "data") or []
             for ev in data:
@@ -222,6 +227,7 @@ class Flow:
 
 
 def main():
+    global POLL_S
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--base-url", required=True)
     add_key_args(parser)
@@ -229,7 +235,10 @@ def main():
     parser.add_argument("--out", help="output file (default: stdout)")
     parser.add_argument("--stripe-version", default=API_VERSION)
     parser.add_argument("--keep", action="store_true", help="leave the clock and its objects in place")
+    parser.add_argument("--poll-s", type=float, default=POLL_S,
+                        help="seconds between clock checks while the clock advances (default: 1)")
     args = parser.parse_args()
+    POLL_S = args.poll_s
 
     key = key_from_args(parser, args)
     run_at = datetime.now(timezone.utc)

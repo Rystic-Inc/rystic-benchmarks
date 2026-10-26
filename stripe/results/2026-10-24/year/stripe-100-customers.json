@@ -1,0 +1,70 @@
+{
+ "customers": 100,
+ "clocks": 34,
+ "rounds": [
+  {
+   "to": "2027-01-01 00:00",
+   "advances_sent_s": 5.0,
+   "all_ready_s": 285.3,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-03-01 00:00",
+   "advances_sent_s": 5.0,
+   "all_ready_s": 413.4,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-05-01 00:00",
+   "advances_sent_s": 5.1,
+   "all_ready_s": 405.5,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-07-01 00:00",
+   "advances_sent_s": 5.1,
+   "all_ready_s": 415.4,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-09-01 00:00",
+   "advances_sent_s": 4.9,
+   "all_ready_s": 394.4,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-11-01 00:00",
+   "advances_sent_s": 5.2,
+   "all_ready_s": 402.9,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-11-01 02:00",
+   "advances_sent_s": 5.0,
+   "all_ready_s": 140.7,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  }
+ ],
+ "setup_s": 269.6,
+ "requests": 2080,
+ "r429": {},
+ "elapsed_s": 2763.0,
+ "subscriptions_with_a_full_year_paid": 100,
+ "examples_wrong": [],
+ "total_s": 2763.0,
+ "clocks_deleted": 0
+}

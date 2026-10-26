@@ -1,0 +1,102 @@
+{
+ "date": "2026-10-24",
+ "run_exited_pdt": "01:45 PM",
+ "method": "Every test clock in the sandbox listed and counted by status: once at 1:46 PM, then once a minute from 1:50 PM (watch_clocks.py does the same) until none was advancing.",
+ "timeline": [
+  {
+   "time_pdt": "01:46 PM",
+   "advancing": 226,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:50 PM",
+   "advancing": 187,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:51 PM",
+   "advancing": 176,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:52 PM",
+   "advancing": 165,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:53 PM",
+   "advancing": 155,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:54 PM",
+   "advancing": 145,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:56 PM",
+   "advancing": 135,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:57 PM",
+   "advancing": 125,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:58 PM",
+   "advancing": 115,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "01:59 PM",
+   "advancing": 105,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:00 PM",
+   "advancing": 94,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:01 PM",
+   "advancing": 83,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:02 PM",
+   "advancing": 73,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:03 PM",
+   "advancing": 60,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:04 PM",
+   "advancing": 50,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:05 PM",
+   "advancing": 40,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:06 PM",
+   "advancing": 29,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:07 PM",
+   "advancing": 14,
+   "clocks": 1409
+  },
+  {
+   "time_pdt": "02:08 PM",
+   "advancing": 0,
+   "clocks": 1409
+  }
+ ]
+}

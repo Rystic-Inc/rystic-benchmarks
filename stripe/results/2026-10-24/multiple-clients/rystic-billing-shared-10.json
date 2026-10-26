@@ -1,0 +1,150 @@
+{
+ "flow": "billing",
+ "retries_per_429": 0,
+ "reference": "results/2026-10-20/runs (Stripe, 20 Oct 2026)",
+ "levels": [
+  {
+   "flows": 10,
+   "wall_s": 0.3,
+   "retries": 0,
+   "gave_up": 0,
+   "flow_s_median": 0.24,
+   "flow_s_max": 0.26,
+   "all_steps_match": 10,
+   "agrees_hist": {
+    "7": 10
+   },
+   "differing_steps": {},
+   "flows_with_refusals": 0,
+   "responses": {
+    "200": 160
+   },
+   "errors": [],
+   "clock_wait_s_median": 0.1,
+   "clock_wait_s_max": 0.1,
+   "would_time_out_in_harness": 0,
+   "per_flow": [
+    {
+     "seconds": 0.24,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.25,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.24,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.18,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.25,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.24,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.23,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.14,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.12,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 0.26,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 16
+     },
+     "refused": 0,
+     "clock_wait_s": 0.1,
+     "clock_ready": true
+    }
+   ]
+  }
+ ]
+}
