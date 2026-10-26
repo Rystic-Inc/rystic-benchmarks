@@ -12,7 +12,7 @@ Each comparison sends the same calls to the real service, to Rystic's simulator 
 
 | Folder | API | Compared | Recorded |
 |---|---|---|---|
-| [`stripe/`](stripe/) | Stripe | Stripe test mode (referee), Rystic stripe-twin v0.0.18 and v0.0.17, stripe-mock v0.206.0 | 20 Oct 2026 |
+| [`stripe/`](stripe/) | Stripe | Stripe test mode (referee), Rystic stripe-twin v0.0.18 and v0.0.17, stripe-mock v0.206.0 | 20 Oct 2026; stress test 24 Oct 2026 |
 
 ## License
 

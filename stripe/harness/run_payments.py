@@ -34,6 +34,7 @@ class Payments:
         self.c = client
         self.steps = []
         self.ids = set()
+        self.since = None  # the server's time when the flow made its first object
 
     def record(self, name, result, started):
         self.steps.append({"step": len(self.steps) + 1, "name": name, "request": self.c.take_sent(),
@@ -47,6 +48,8 @@ class Payments:
         t = time.monotonic()
         s, cus = c.call("POST", "/v1/customers", {"email": "jenny.rosen@example.com"})
         self.keep(field(cus, "id"))
+        if isinstance(field(cus, "created"), int):
+            self.since = cus["created"]
         self.record("create a customer", {"status": s}, t)
         if not ok(s):
             return
@@ -122,9 +125,11 @@ class Payments:
         self.record("list the events the flow caused", {"event_types": self.events()}, t)
 
     def events(self):
+        """Event types whose object is one this flow created, counted, from every event since the flow began."""
+        since = "&created%%5Bgte%%5D=%d" % self.since if self.since is not None else ""
         counts, after = {}, None
-        for _ in range(10):
-            s, page = self.c.call("GET", "/v1/events?limit=100" + ("&starting_after=" + after if after else ""))
+        for _ in range(1000):  # a guard against a list that never ends, not a window
+            s, page = self.c.call("GET", "/v1/events?limit=100" + since + ("&starting_after=" + after if after else ""))
             data = field(page, "data") or []
             for ev in data:
                 obj = (ev.get("data") or {}).get("object") or {}

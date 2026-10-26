@@ -1,0 +1,716 @@
+{
+ "flow": "billing",
+ "retries_per_429": 10,
+ "reference": "results/2026-10-20/runs (Stripe, 20 Oct 2026)",
+ "levels": [
+  {
+   "flows": 1,
+   "wall_s": 16.4,
+   "retries": 0,
+   "gave_up": 0,
+   "flow_s_median": 14.87,
+   "flow_s_max": 14.87,
+   "all_steps_match": 1,
+   "agrees_hist": {
+    "7": 1
+   },
+   "differing_steps": {},
+   "flows_with_refusals": 0,
+   "responses": {
+    "200": 22
+   },
+   "errors": [],
+   "clock_wait_s_median": 10.4,
+   "clock_wait_s_max": 10.4,
+   "would_time_out_in_harness": 0,
+   "per_flow": [
+    {
+     "seconds": 14.87,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 22
+     },
+     "refused": 0,
+     "clock_wait_s": 10.4,
+     "clock_ready": true
+    }
+   ]
+  },
+  {
+   "flows": 50,
+   "wall_s": 127.8,
+   "retries": 572,
+   "gave_up": 0,
+   "flow_s_median": 74.02,
+   "flow_s_max": 126.81,
+   "all_steps_match": 50,
+   "agrees_hist": {
+    "7": 50
+   },
+   "differing_steps": {},
+   "flows_with_refusals": 50,
+   "responses": {
+    "200": 3524,
+    "429 rate_limit": 572
+   },
+   "errors": [],
+   "clock_wait_s_median": 63.2,
+   "clock_wait_s_max": 112.1,
+   "would_time_out_in_harness": 0,
+   "per_flow": [
+    {
+     "seconds": 87.79,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 87,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 76.0,
+     "clock_ready": true
+    },
+    {
+     "seconds": 51.69,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 46,
+      "429 rate_limit": 16
+     },
+     "refused": 16,
+     "clock_wait_s": 43.6,
+     "clock_ready": true
+    },
+    {
+     "seconds": 30.0,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 40,
+      "429 rate_limit": 4
+     },
+     "refused": 4,
+     "clock_wait_s": 22.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 78.26,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 12,
+      "200": 71
+     },
+     "refused": 12,
+     "clock_wait_s": 67.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 111.38,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 101,
+      "429 rate_limit": 19
+     },
+     "refused": 19,
+     "clock_wait_s": 98.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 17.92,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 30,
+      "429 rate_limit": 1
+     },
+     "refused": 1,
+     "clock_wait_s": 11.0,
+     "clock_ready": true
+    },
+    {
+     "seconds": 71.09,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 72,
+      "429 rate_limit": 10
+     },
+     "refused": 10,
+     "clock_wait_s": 61.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 22.95,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 35,
+      "429 rate_limit": 1
+     },
+     "refused": 1,
+     "clock_wait_s": 15.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 114.17,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 11,
+      "200": 111
+     },
+     "refused": 11,
+     "clock_wait_s": 102.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 96.57,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 12,
+      "200": 95
+     },
+     "refused": 12,
+     "clock_wait_s": 84.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 36.42,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 41,
+      "429 rate_limit": 9
+     },
+     "refused": 9,
+     "clock_wait_s": 28.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 105.88,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 106,
+      "429 rate_limit": 8
+     },
+     "refused": 8,
+     "clock_wait_s": 93.6,
+     "clock_ready": true
+    },
+    {
+     "seconds": 56.72,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 61,
+      "429 rate_limit": 8
+     },
+     "refused": 8,
+     "clock_wait_s": 48.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 119.26,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 111,
+      "429 rate_limit": 14
+     },
+     "refused": 14,
+     "clock_wait_s": 105.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 119.88,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 116,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 106.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 97.23,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 21,
+      "200": 90
+     },
+     "refused": 21,
+     "clock_wait_s": 85.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 93.92,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 22,
+      "200": 83
+     },
+     "refused": 22,
+     "clock_wait_s": 82.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 79.83,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 64,
+      "429 rate_limit": 18
+     },
+     "refused": 18,
+     "clock_wait_s": 68.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 47.88,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 52,
+      "429 rate_limit": 8
+     },
+     "refused": 8,
+     "clock_wait_s": 39.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 63.18,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 67,
+      "429 rate_limit": 9
+     },
+     "refused": 9,
+     "clock_wait_s": 54.5,
+     "clock_ready": true
+    },
+    {
+     "seconds": 89.16,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 13,
+      "200": 87
+     },
+     "refused": 13,
+     "clock_wait_s": 78.2,
+     "clock_ready": true
+    },
+    {
+     "seconds": 45.29,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 31,
+      "429 rate_limit": 9
+     },
+     "refused": 9,
+     "clock_wait_s": 37.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 37.38,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 41,
+      "429 rate_limit": 8
+     },
+     "refused": 8,
+     "clock_wait_s": 29.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 28.66,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 38,
+      "429 rate_limit": 4
+     },
+     "refused": 4,
+     "clock_wait_s": 21.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 77.64,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 14,
+      "200": 75
+     },
+     "refused": 14,
+     "clock_wait_s": 65.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 84.37,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 16,
+      "200": 77
+     },
+     "refused": 16,
+     "clock_wait_s": 73.6,
+     "clock_ready": true
+    },
+    {
+     "seconds": 103.91,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 94,
+      "429 rate_limit": 19
+     },
+     "refused": 19,
+     "clock_wait_s": 91.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 102.53,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 99,
+      "429 rate_limit": 16
+     },
+     "refused": 16,
+     "clock_wait_s": 90.5,
+     "clock_ready": true
+    },
+    {
+     "seconds": 85.45,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 85,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 74.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 69.16,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 65,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 60.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 76.94,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 69,
+      "429 rate_limit": 17
+     },
+     "refused": 17,
+     "clock_wait_s": 64.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 59.88,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 60,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 51.5,
+     "clock_ready": true
+    },
+    {
+     "seconds": 110.21,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 14,
+      "200": 106
+     },
+     "refused": 14,
+     "clock_wait_s": 97.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 28.02,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 38,
+      "429 rate_limit": 4
+     },
+     "refused": 4,
+     "clock_wait_s": 20.7,
+     "clock_ready": true
+    },
+    {
+     "seconds": 112.39,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 112,
+      "429 rate_limit": 10
+     },
+     "refused": 10,
+     "clock_wait_s": 99.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 52.58,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 53,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 44.3,
+     "clock_ready": true
+    },
+    {
+     "seconds": 126.81,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 13,
+      "200": 101
+     },
+     "refused": 13,
+     "clock_wait_s": 112.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 25.25,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 30,
+      "429 rate_limit": 4
+     },
+     "refused": 4,
+     "clock_wait_s": 17.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 93.92,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 18,
+      "200": 86
+     },
+     "refused": 18,
+     "clock_wait_s": 82.2,
+     "clock_ready": true
+    },
+    {
+     "seconds": 68.45,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 58,
+      "429 rate_limit": 11
+     },
+     "refused": 11,
+     "clock_wait_s": 59.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 60.48,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 44,
+      "429 rate_limit": 8
+     },
+     "refused": 8,
+     "clock_wait_s": 51.8,
+     "clock_ready": true
+    },
+    {
+     "seconds": 67.03,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 69,
+      "429 rate_limit": 10
+     },
+     "refused": 10,
+     "clock_wait_s": 58.5,
+     "clock_ready": true
+    },
+    {
+     "seconds": 102.01,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 97,
+      "429 rate_limit": 12
+     },
+     "refused": 12,
+     "clock_wait_s": 90.0,
+     "clock_ready": true
+    },
+    {
+     "seconds": 42.73,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 47,
+      "429 rate_limit": 9
+     },
+     "refused": 9,
+     "clock_wait_s": 35.0,
+     "clock_ready": true
+    },
+    {
+     "seconds": 120.43,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "429 rate_limit": 20,
+      "200": 100
+     },
+     "refused": 20,
+     "clock_wait_s": 106.5,
+     "clock_ready": true
+    },
+    {
+     "seconds": 59.63,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 38,
+      "429 rate_limit": 14
+     },
+     "refused": 14,
+     "clock_wait_s": 51.4,
+     "clock_ready": true
+    },
+    {
+     "seconds": 20.38,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 29,
+      "429 rate_limit": 3
+     },
+     "refused": 3,
+     "clock_wait_s": 13.6,
+     "clock_ready": true
+    },
+    {
+     "seconds": 55.14,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 60,
+      "429 rate_limit": 9
+     },
+     "refused": 9,
+     "clock_wait_s": 46.9,
+     "clock_ready": true
+    },
+    {
+     "seconds": 123.59,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 117,
+      "429 rate_limit": 17
+     },
+     "refused": 17,
+     "clock_wait_s": 109.1,
+     "clock_ready": true
+    },
+    {
+     "seconds": 30.98,
+     "agrees": 7,
+     "steps": 7,
+     "differs": [],
+     "responses": {
+      "200": 39,
+      "429 rate_limit": 5
+     },
+     "refused": 5,
+     "clock_wait_s": 23.5,
+     "clock_ready": true
+    }
+   ]
+  }
+ ]
+}

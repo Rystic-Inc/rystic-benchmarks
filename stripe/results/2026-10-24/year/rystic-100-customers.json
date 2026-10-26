@@ -1,0 +1,70 @@
+{
+ "customers": 100,
+ "clocks": 34,
+ "rounds": [
+  {
+   "to": "2027-01-01 00:00",
+   "advances_sent_s": 0.1,
+   "all_ready_s": 0.2,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-03-01 00:00",
+   "advances_sent_s": 0.2,
+   "all_ready_s": 0.2,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-05-01 00:00",
+   "advances_sent_s": 0.2,
+   "all_ready_s": 0.2,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-07-01 00:00",
+   "advances_sent_s": 0.2,
+   "all_ready_s": 0.2,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-09-01 00:00",
+   "advances_sent_s": 0.2,
+   "all_ready_s": 0.3,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-11-01 00:00",
+   "advances_sent_s": 0.3,
+   "all_ready_s": 0.3,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  },
+  {
+   "to": "2027-11-01 02:00",
+   "advances_sent_s": 0.1,
+   "all_ready_s": 0.1,
+   "clocks_ready": 34,
+   "advance_errors": [],
+   "advance_error_count": 0
+  }
+ ],
+ "setup_s": 0.1,
+ "requests": 946,
+ "r429": {},
+ "elapsed_s": 2.2,
+ "subscriptions_with_a_full_year_paid": 100,
+ "examples_wrong": [],
+ "total_s": 2.2,
+ "clocks_deleted": 34
+}

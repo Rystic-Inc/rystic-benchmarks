@@ -6,7 +6,7 @@ The same API calls go to three servers:
 - **Rystic's Stripe simulator**, `stripe-twin`, run locally with the `rystic` CLI.
 - **[stripe-mock](https://github.com/stripe/stripe-mock)**, Stripe's open-source mock server.
 
-There are three scenarios: six single calls, a billing flow (7 steps, on a test clock) and a payments flow (9 steps). For each step the harness records the observable answer: status codes, chosen fields, and the events the flow caused. `compare_payments.py` then compares that answer field by field with Stripe's. Timings, recorded request lines and object ids are never compared. The scenarios are listed step by step in [`harness/README.md`](harness/README.md).
+There are three scenarios: six single calls, a billing flow (7 steps, on a test clock) and a payments flow (9 steps). A stress test then runs the billing flow many times at once, for many customers and over a year; see [Stress test](#stress-test-recorded-24-oct-2026). For each step the harness records the observable answer: status codes, chosen fields, and the events the flow caused. `compare_payments.py` then compares that answer field by field with Stripe's. Timings, recorded request lines and object ids are never compared. The scenarios are listed step by step in [`harness/README.md`](harness/README.md).
 
 ## Pinned versions
 
@@ -94,6 +94,63 @@ What the numbers show:
 
 The first startup trial of each fresh bare build (775.4 ms and 411.3 ms) includes macOS's first-run checks of a newly built binary; the median is unaffected. `home-turf.json` also carries an earlier session from 17 Oct 2026 on the same machine, with stripe-twin v0.0.14. Every target ran slower that day, stripe-mock included, so read the two as separate sessions, not as a change in either tool.
 
+## Stress test, recorded 24 Oct 2026
+
+The billing flow run many times at once, for many customers and over a year, against Stripe test mode and stripe-twin v0.0.18 (`rystic` CLI 0.0.24), on the same machine as above. The scripts are in [`stress/`](stress/README.md), with the command behind each table; the runs are in `results/2026-10-24/`. stripe-mock is left out: it renews nothing, so there is nothing to time. Every Stripe number is one run, on one Dashboard sandbox with no other work in progress, between 11:00 AM and 4:45 PM PDT.
+
+### Many clients, one customer each
+
+K copies of the billing flow start at once against one server (`stress/concurrent_flows.py`), each scored against Stripe's 20 Oct run. On Stripe, each 429 is sent again up to 10 times. On stripe-twin, the clock is checked every 50 ms, and the instance is reset before each level.
+
+| Clients | Stripe: flows matching all 7 steps | Stripe wall time | Stripe clock wait, median / max | stripe-twin: flows matching | stripe-twin wall time |
+|---|---|---|---|---|---|
+| 1 | 1/1 | 19.0 s | 10.4 s | 1/1 | 0.1 s |
+| 10 | 10/10 | 42.3 s | 23.2 / 33.9 s | 10/10 | 0.3 s |
+| 50 | 50/50, after 572 retries | 127.8 s | 63.2 / 112.1 s | 50/50 | 4.0 s on one instance; 0.4 s with one instance per client |
+
+Files: `multiple-clients/stripe-billing-1-5-10-25-50.json` (the 1 and 10 rows, plus 5 and 25), `multiple-clients/stripe-billing-1-50.json` (the 50 row), `multiple-clients/rystic-billing-shared-{1,10,50}.json` and `multiple-clients/rystic-billing-own-instance-50.json`.
+
+### A year of billing
+
+One client, one request at a time (`stress/billing_year.py`): a test clock holds at most three customers, so 100 customers need 34 clocks, and an advance moves a clock at most two billing intervals, so a year takes seven advances, each waiting for every clock.
+
+| Step | Stripe, 1 customer | Stripe, 100 customers | stripe-twin, 1 customer | stripe-twin, 100 customers |
+|---|---|---|---|---|
+| Setup | 3.1 s | 269.6 s | under 0.1 s | 0.1 s |
+| Seven clock advances, 1 Nov 2026 to 1 Nov 2027 02:00 | 112.7 s | 2,457.6 s | under 0.4 s | 1.5 s |
+| Total, with the checks | 116.2 s | 2,763.0 s (46 min) | 0.4 s | 2.2 s |
+| Subscriptions with 13 paid $20 invoices | 1/1 | 100/100 | 1/1 | 100/100 |
+
+The clock is read every 2 s, except for stripe-twin's one-customer run, read every 50 ms: at 2 s, its seven waits make it take about 14 s. Advance times are recorded to 0.1 s each. Files: `year/`.
+
+### Many clients, 100 customers each
+
+K clients at once, each billing its own 100 customers for one month, one request at a time (`stress/billing100.py`). Each request is tried up to 10 times on a 429.
+
+| | 1 client | 10 clients | 50 clients |
+|---|---|---|---|
+| Stripe: clients that finished | 1 of 1 | 9 of 10 | 4 of 50 |
+| Stripe: clients stopped by 429s | 0 | 1, while sending its advances | 34: 21 during setup, 13 at the advance |
+| Stripe: setup per client, median | 274.4 s | 274.5 s | 446.4 s |
+| Stripe: renewals paid | 100 of 100 | 900 of 1,000 | 514 of 5,000 |
+| Stripe: 429s / requests | 0 / 602 | 436 / 11,436 | 11,482 / 34,808 |
+| Stripe: wall time | 540.1 s (9 min) | 2,100.1 s (35 min) | 3,420.5 s (57 min); clients stopped waiting for clocks at 40 min |
+| stripe-twin, one instance per client | 1 of 1 in 1.0 s | 10 of 10 in 3.0 s | 50 of 50 in 20.2 s |
+
+Every renewal the clients checked was paid, on both servers. Files: `clients-x100/`.
+
+### After the 50-client run
+
+The 50-client run exited at 1:45 PM PDT with 226 of its clocks still advancing; the last finished at 2:08 PM (`after-50-clients/clocks-advancing.json`). Stripe refuses to delete a clock that is advancing, with a 429, "Test clock advancement underway - cannot perform modifications": 361 of the run's 544 clock deletes were refused (`clients-x100/stripe-50-clients.json`). A one-customer billing flow started at about 1:34 PM, during the backlog, waited 900 s for its clock, which never read `ready` (`after-50-clients/probe-billing-flow.json`). On a quiet sandbox that clock takes 10 to 15 s.
+
+### Stress caveats
+
+- **One run each.** Each Stripe number is a single run on one sandbox on one afternoon. Stripe processes an account's clocks together, so the times depend on whatever else the account is doing.
+- **The 1 and 10 rows of the first table come from an earlier run of the events step.** That run read only the account's newest 1,000 events, as the harness did before this change. Up to 25 clients it made no difference, and every flow matched; at 50, the other flows' events pushed 43 flows' own events out of that window. The 50 row comes from a second run with the current events step.
+- **Clock checks.** A check interval adds up to one interval to each clock wait. That matters for the simulator, which finishes an advance in milliseconds, and little for Stripe's waits of 10 s and more.
+- **One shared simulator instance slows with many clients.** Its clock stands still unless moved, so every flow's objects get the same creation time, and each flow's events step pages through every flow's events. One instance per client avoids it.
+- **A validation run, 25 Oct.** In one of three one-customer, one-month runs of `billing_year.py` on Stripe, the renewal invoice still read `draft` just after the clock reported `ready`; the other two read it paid. Every recorded run read every renewal paid.
+
 ## Caveats
 
 - **The payments `charge.updated` gap.** Stripe attaches the charge's balance transaction about 3 s after the confirm (2.7 s in this run), and it sends one `charge.updated` when it does. Both twins attach the balance transaction at once and send no `charge.updated`. So step 3 matches, but step 9 differs by that one event type. The twins score 8 of 9 steps because of it.
@@ -102,7 +159,7 @@ The first startup trial of each fresh bare build (775.4 ms and 411.3 ms) include
 - **The bare-binary rows aren't reproducible from public artifacts.** Those builds come from Rystic's source and aren't published. `rystic run` is the public route.
 - **stripe-mock is stateless by design.** Its own README says so: it validates requests against Stripe's OpenAPI spec and answers with fixture data. The stateful scenarios here test something it doesn't attempt.
 - **Stripe's answers can change.** The Stripe column is what Stripe's test mode answered on 20 Oct 2026 with `Stripe-Version: 2026-06-24.dahlia`.
-- **The harness changed in one respect since the recording.** The published scripts read the key from `STRIPE_SECRET_KEY` or `--key-file`. The recorded local runs passed a placeholder key on the command line with a flag the public copy no longer has. Nothing else in the scenario code changed.
+- **The harness changed in two respects since the recording.** The published scripts read the key from `STRIPE_SECRET_KEY` or `--key-file`; the recorded local runs passed a placeholder key on the command line with a flag the public copy no longer has. And each flow's events step now reads every event created since the flow's first object, where it read the account's newest 1,000, so flows running at the same time in one account can't push each other's events out (see the stress test). For one flow in a fresh sandbox both read the same events. `run_flow.py` also takes `--poll-s`, the seconds between clock checks; the default is the 1 s the recording used.
 
 ## Reproduce
 
@@ -164,9 +221,15 @@ Each prints a table of per-step verdicts, ending with how many steps each server
 
 `results/2026-10-20/home-turf/` holds the `startup.py`, `latency.sh` and `bench.go` used. `startup.py --targets mock-docker,mock-native,rystic-run-0.0.18,rystic-run-0.0.17` needs Docker, the `rystic` CLI and a native `stripe-mock` binary next to the script. `latency.sh` also needs `bench` (`go build bench.go`) there.
 
+### 6. Stress test
+
+[`stress/README.md`](stress/README.md) gives the command behind each stress-test table. Run each Stripe test on a sandbox with no other work in progress: the 50-client runs take about an hour and leave clocks advancing for up to half an hour after they end.
+
 ## What's here
 
 - **`harness/`:** the scenario scripts, the comparison script, and their tests with synthetic fixtures. See [`harness/README.md`](harness/README.md).
+- **`stress/`:** the stress-test scripts and their tests. See [`stress/README.md`](stress/README.md).
+- **`results/2026-10-24/`:** the stress-test runs, one folder per table above: `multiple-clients/`, `year/`, `clients-x100/` and `after-50-clients/`. They hold no object ids, keys or account ids.
 - **`results/2026-10-20/`:**
   - `receipts.json`, `flow.json`, `payments.json`: the merged comparisons from `compare_payments.py`, with per-step verdicts and the four runs.
   - `headline.json`: the headline numbers per scenario and server, including the payments event-type count.
